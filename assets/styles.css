@@ -1,0 +1,67 @@
+#draggable {
+  width: 200px;
+  height: 20px;
+  text-align: center;
+  background: lightsteelblue;
+}
+
+
+.dropzone {
+  width: 200px;
+  height: 20px;
+  background: lightsteelblue;
+  margin-bottom: 10px;
+  padding: 10px;
+  opacity: 1;
+}
+
+.dropzone .operators_style {
+
+  border: none;
+}
+
+.operators {
+  display: flex;
+  justify-content: start;
+}
+
+.operators_style {
+    padding: 2px;
+    text-align: center;
+    margin: 0 5px;
+    border: 1px solid;
+    border-radius: 7px;
+}
+
+.wrap {
+  display: flex;
+  justify-content: start;
+}
+
+.column1, .column2, .column3, .column4 {
+  /*width: 20vw;*/
+  padding: 10px;
+}
+
+.column2, .column3 {
+  padding-top: 39px;
+}
+
+.column4 {
+  flex-direction: column;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+/*.column2 .dropzone {*/
+/*  margin: 50px auto;*/
+/*}*/
+
+.disable{
+  width: 200px;
+  height: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
+  opacity: 0;
+}
+

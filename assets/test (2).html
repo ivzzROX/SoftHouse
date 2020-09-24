@@ -1,0 +1,206 @@
+<html>
+
+<head>
+</head>
+
+<body>
+<div align="left">
+    <div>
+        <table border=3 id="logic_table">
+            <tr id="tr1">
+                <td>Output[1]</td>
+                <td><select id='sel'></select></td>
+                <td id="td1"><input type="button" value="+" onclick="addEvent(1)"></td>
+                <td id="td1_add_branch"><input type="button" value="{}" onclick="add_branch(1)"></td>
+            </tr>
+            <tr id="tr1.1">
+                <td> Value</td>
+                <td><input type="text" size=5></td>
+                <td id="td1.1"><input type="button" value="-" onclick="delEvent(1)"></td>
+            </tr>
+        </table>
+
+    </div>
+    <template id="branch_template">
+        <table border=3>
+            <tr>
+                <td></td>
+                <td><select></select></td>
+                <td><input class="add_cell" type="button" value="+"></td>
+                <td><input class="add_branch" type="button" value="{}"></td>
+            </tr>
+            <tr>
+                <td> Value</td>
+                <td><input type="text" size=5></td>
+                <td><input class="delete_cell" type="button" value="-"></td>
+            </tr>
+        </table>
+    </template>
+</div>
+
+<script>
+    const inputs = [" ", "Input[1]", "Input[2]", "Input[3]", "Input[4]"
+        , "Input[5]", "Input[6]", "Input[7]", "Input[8]"];
+
+    var available_branches = [
+        "Branch[1]", "Branch[2]", "Branch[3]", "Branch[4]"
+        , "Branch[5]", "Branch[6]", "Branch[7]", "Branch[8]"];
+
+
+    const logic = [" ", "OR", "AND"];
+    var availbale_inputs = []
+    availbale_inputs.concat(inputs)
+    availbale_inputs.concat(available_branches)
+    availbale_inputs.forEach((element) => {
+        var opt = document.createElement('option');
+        opt.value = element;
+        opt.innerHTML = element;
+        document.getElementById('sel').appendChild(opt);
+    });
+
+    // document.getElementById('sel' + i).childNodes[0].setAttribute("onchange",  "check_branch(this.value," + i + ")");
+
+    function add_branch(index) {
+        console.log(available_inputs)
+        available_inputs.splice(0, 1);
+        console.log(available_inputs)
+        var content = document.querySelector('#branch_template').content;
+
+        var clone = content.cloneNode(true);
+        console.log(clone);
+
+        clone.querySelector('select').setAttribute('id', 'sel_branch' + index)
+        available_inputs.forEach((element) => {
+            var opt = document.createElement('option');
+            opt.value = element;
+            opt.innerHTML = element;
+            clone.getElementById('sel_branch' + index).appendChild(opt);
+        });
+        clone.querySelectorAll("tr")[0].setAttribute('id', 'tr_branch' + index)
+        clone.querySelectorAll("tr")[1].setAttribute('id', 'tr_branch' + index + ".1")
+        clone.querySelector('.add_cell').setAttribute('id', "td_branch" + index);
+        clone.querySelector('.add_cell').setAttribute('onclick', "addEvent('_branch" + (index) + "')");
+        clone.querySelector('.delete_cell').setAttribute('id', "td_branch" + index + ".1");
+        clone.querySelector('.delete_cell').setAttribute('onclick', "delEvent('_branch" + (index) + ".1')");
+        clone.querySelector('.add_branch').setAttribute('id', "td_branch_add_branch" + index);
+        clone.querySelector('.add_branch').setAttribute('onclick', "add_branch('_branch" + (index + 1) + "')");
+        document.getElementById("logic_table").appendChild(clone)
+    }
+
+    function check_branch(value, index) {
+        if (value.includes('Branch')) {
+
+            available_inputs.splice(available_inputs.findIndex(value), 1)
+            var new_branch_table = document.createElement("table")
+            new_branch_table.setAttribute('id', 'table_' + index + '_' + value)
+            var add_cell_td = document.createElement('td')
+            var delete_cell_td = document.createElement('td')
+            var add_cell = document.createElement("input")
+            add_cell.setAttribute("type", "button")
+            add_cell.setAttribute("value", "+")
+            add_cell.setAttribute("onclick", "addEvent()")
+            var delet_cell = document.createElement("input")
+            add_cell.appendChild()
+
+            var new_branch = document.createElement("tr")
+
+            var branch_name = document.createElement("td");
+            var branch_value = document.createElement("td");
+
+            var sel1 = document.createElement('select');
+
+
+            logic.forEach((element) => {
+                var opt = document.createElement('option');
+                opt.value = element;
+                opt.innerHTML = element;
+                sel1.appendChild(opt);
+            })
+
+            var sel2 = document.createElement('select');
+            inputs.index.forEach((element) => {
+                var opt = document.createElement('option');
+                opt.value = element;
+                opt.innerHTML = element;
+                sel2.appendChild(opt);
+            });
+
+            var txt4 = document.createElement('input');
+            txt4.setAttribute("type", "text");
+            txt4.setAttribute("size", "5");
+
+            sel2.setAttribute("onchange", "check_branch(this.value, this.)");
+
+            cell.appendChild(sel1);
+
+            cel2.appendChild(sel2);
+            cel4.appendChild(txt4);
+            document.getElementById('out_' + index).insertBefore(new_branch_table, document.getElementById('table_' + index))
+            document.getElementById('tr' + n).insertBefore(cell, document.getElementById('td' + n));
+            document.getElementById('tr' + n).insertBefore(cel2, document.getElementById('td' + n));
+
+            document.getElementById('tr' + n + '.1').insertBefore(cel3, document.getElementById('td' + n + '.1'));
+            document.getElementById('tr' + n + '.1').insertBefore(cel4, document.getElementById('td' + n + '.1'));
+        }
+    }
+
+    function addEvent(n) {
+
+        var cell = document.createElement("td");
+        var cel2 = document.createElement("td");
+
+        var cel3 = document.createElement("td");
+        var cel4 = document.createElement("td");
+
+        var sel1 = document.createElement('select');
+
+        logic.forEach((element) => {
+            var opt = document.createElement('option');
+            opt.value = element;
+            opt.innerHTML = element;
+            sel1.appendChild(opt);
+        })
+
+        var sel2 = document.createElement('select');
+        inputs.forEach((element) => {
+            var opt = document.createElement('option');
+            opt.value = element;
+            opt.innerHTML = element;
+            sel2.appendChild(opt);
+        });
+
+        var txt4 = document.createElement('input');
+        txt4.setAttribute("type", "text");
+        txt4.setAttribute("size", "5");
+
+        sel2.setAttribute("onchange", "check_branch(this.value," + n + ")");
+
+
+        cell.appendChild(sel1);
+        cel2.appendChild(sel2);
+        cel4.appendChild(txt4);
+
+        console.log(n)
+
+        document.getElementById('tr' + n).insertBefore(cell, document.getElementById('td' + n));
+        document.getElementById('tr' + n).insertBefore(cel2, document.getElementById('td' + n));
+
+        document.getElementById('tr' + n + '.1').insertBefore(cel3, document.getElementById('td' + n + '.1'));
+        document.getElementById('tr' + n + '.1').insertBefore(cel4, document.getElementById('td' + n + '.1'));
+    }
+
+    function delEvent(n) {
+
+        var tr_list = document.getElementById("tr" + n);
+        var tr_v_list = document.getElementById("tr" + n + ".1");
+
+        tr_list.removeChild(tr_list.childNodes[tr_list.childNodes.length - 4]);
+        tr_v_list.removeChild(tr_v_list.childNodes[tr_list.childNodes.length - 4]);
+    }
+
+
+</script>
+
+</body>
+
+</html>
