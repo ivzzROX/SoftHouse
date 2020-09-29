@@ -43,4 +43,4 @@ class TestEndpoint(Resource):
 class TimeStamp(Resource):
     @staticmethod
     def get():
-        return time.time()
+        return int(time.time())
