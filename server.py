@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Resource, Api
 
 import config
-from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, TestPmoEndpoint
+from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, TestPmoEndpoint, TestTelegramEndpoint, TestInoEndpoint
 
 server = Flask('my_app')
 app = Flask(__name__)
@@ -11,6 +11,8 @@ api.add_resource(TimeStamp, '/timestamp')
 api.add_resource(TestEndpoint, '/test')
 api.add_resource(TestPmoEndpoint, '/testpmo')
 api.add_resource(TestTimeEndpoint, '/testtime')
+api.add_resource(TestTelegramEndpoint, '/testtlgrm')
+api.add_resource(TestInoEndpoint, '/testino')
 
 
 def start_server():

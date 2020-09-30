@@ -71,6 +71,42 @@ class TestTimeEndpoint(Resource):
         })
 
 
+class TestTelegramEndpoint(Resource):
+    @staticmethod
+    def get():
+        return jsonify({
+            "OUT":
+                {
+                    "brch":
+                        [
+                            "{out: 1}", "{g01: 445}"
+                        ],
+                    "out":
+                        [
+                            "{g01: 2}"
+                        ]
+                }
+        })
+
+
+class TestInoEndpoint(Resource):
+    @staticmethod
+    def get():
+        return jsonify({
+            "OUT":
+                {
+                    "brch":
+                        [
+                            "{out: 1}", "{i01: 9}"
+                        ],
+                    "out":
+                        [
+                            "{i01: 2}"
+                        ]
+                }
+        })
+
+
 class TestPmoEndpoint(Resource):
     @staticmethod
     def get():
