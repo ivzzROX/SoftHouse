@@ -1,5 +1,7 @@
-# element = {2:'or'}
-# 2 - start
+# element = {0001:  'start':    10}
+#            SN     operation   value
+# 1 - start
+# 2 - start_not
 # 3 - or
 # 4 - and
 # 5 - or_not
@@ -22,22 +24,23 @@ class TestEndpoint(Resource):
                         ],
                     "out":
                         [
-                            "{2: 2}", "{4: 4}", "{s01: 4}", "{s02, 6}"
+                            "{0A02: 1: 12}", "{0A03: 4: 12}", "{s01: 4}", "{s02, 6}"
                         ],
                     "s01":
                         [
-                            "{3: 2}", "{s03: 4}", "{7: 3}"
+                            "{0A03: 1: 12}", "{s03: 4}", "{0A07: 3: 12}"
                         ],
                     "s02":
                         [
-                            "{3: 2}", "{5: 4}", "{s03: 4}"
+                            "{0A03: 1: 12}", "{0A05: 4: 12}", "{s03: 4}"
                         ],
                     "s03":
                         [
-                            "{3: 2}", "{5: 4}", "{7: 3}"
+                            "{0A03: 1: 12}", "{0A05: 4: 12}", "{0A07: 3: 12}"
                         ]
                 }
         })
+
 
 
 class TestTimeEndpoint(Resource):
@@ -53,19 +56,19 @@ class TestTimeEndpoint(Resource):
                         ],
                     "out":
                         [
-                            "{2: 2}", "{4: 4}", "{s01: 6}", "{s02, 3}"
+                            "{0C02: 2: 48}", "{0004: 4: 256}", "{s01: 6}", "{s02, 3}"
                         ],
                     "s01":
                         [
-                            "{3: 2}", "{s03: 6}", "{7: 3}"
+                            "{0003: 2: 14}", "{s03: 6}", "{0C07: 3: 56}"
                         ],
                     "s02":
                         [
-                            "{3: 2}", "{5: 4}", "{s03: 4}"
+                            "{0003: 2: 14}", "{00X5: 4: 56}", "{s03: 4}"
                         ],
                     "s03":
                         [
-                            "{3: 2}", "{5: 5}", "{t01: 4}"
+                            "{0003: 2: 24}", "{00X5: 5: 55}", "{t01: 4}"
                         ]
                 }
         })
@@ -79,11 +82,7 @@ class TestTelegramEndpoint(Resource):
                 {
                     "brch":
                         [
-                            "{out: 1}", "{g01: 445}"
-                        ],
-                    "out":
-                        [
-                            "{g01: 2}"
+                            "{g01: 445}"
                         ]
                 }
         })
@@ -97,11 +96,7 @@ class TestInoEndpoint(Resource):
                 {
                     "brch":
                         [
-                            "{out: 1}", "{i01: 9}"
-                        ],
-                    "out":
-                        [
-                            "{i01: 2}"
+                            "{i01: 9}"
                         ]
                 }
         })
@@ -113,8 +108,22 @@ class TestPmoEndpoint(Resource):
         return jsonify({
             "OUT":
                 {
-                    "pmo": 8
+                    "brch":
+                        [
+                            "{p01: 9}"
+                        ]
                 }
+        })
+
+
+class TestTelegramDataEndpoint(Resource):
+    @staticmethod
+    def get():
+        return jsonify({
+            "TLGRM":
+                [
+                    "{445: 1}", "{356: 0}"
+                ]
         })
 
 

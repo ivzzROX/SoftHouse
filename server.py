@@ -2,7 +2,8 @@ from flask import Flask
 from flask_restful import Resource, Api
 
 import config
-from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, TestPmoEndpoint, TestTelegramEndpoint, TestInoEndpoint
+from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, TestPmoEndpoint, TestTelegramEndpoint, \
+    TestInoEndpoint
 
 server = Flask('my_app')
 app = Flask(__name__)
