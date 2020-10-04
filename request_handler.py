@@ -7,9 +7,11 @@
 # 5 - or_not
 # 6 - and_not
 import time
-
-from flask import jsonify
+from flask import jsonify, request, Response
 from flask_restful import Resource
+
+from config import sensor_type
+from db import Sensors
 
 
 class TestEndpoint(Resource):
@@ -40,7 +42,6 @@ class TestEndpoint(Resource):
                         ]
                 }
         })
-
 
 
 class TestTimeEndpoint(Resource):
@@ -132,3 +133,31 @@ class TimeStamp(Resource):
     def get():
         out = f'tm:{int(time.time())},tz:{3}'
         return out
+
+
+class RegisterSensors(Resource):
+    @staticmethod
+    def post():
+        sensors = request.get_json(force=True).get('SENSOR')
+        print(sensors)
+        if sensors is None:
+            return Response('Not valid JSON (SENSOR field is not exist)', status=400)
+        for sensor in sensors:
+            print(sensor)
+            serial_number = sensor.get('SN')
+            if serial_number is None:
+                print('1')
+                return Response('Not valid JSON (SN field is not exist)', status=400)
+            type_int = sensor.get('TYPE')
+            if type_int is None:
+                print('2')
+                return Response('Not valid JSON (TYPE field is not exist)', status=400)
+            type_hr = sensor_type.get(type_int)
+            if type_hr is None:
+                print('3')
+                return Response(f'Not valid JSON (TYPE {type_int} is not found)', status=400)
+            if Sensors.select().where(Sensors.serial_number == serial_number).exists():
+                print('4')
+                return Response(f'Such serial {serial_number} is already exists', status=400)
+            Sensors.create(serial_number=serial_number, type_int=type_int, type_hr=type_hr)
+
