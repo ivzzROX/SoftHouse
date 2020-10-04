@@ -3,7 +3,7 @@ from flask_restful import Resource, Api
 
 import config
 from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, TestPmoEndpoint, TestTelegramEndpoint, \
-    TestInoEndpoint, RegisterSensors
+    TestInoEndpoint, RegisterSensors, RegisterDevice
 
 server = Flask('my_app')
 app = Flask(__name__)
@@ -14,7 +14,8 @@ api.add_resource(TestPmoEndpoint, '/testpmo')
 api.add_resource(TestTimeEndpoint, '/testtime')
 api.add_resource(TestTelegramEndpoint, '/testtlgrm')
 api.add_resource(TestInoEndpoint, '/testino')
-api.add_resource(RegisterSensors, '/register')
+api.add_resource(RegisterSensors, '/sensors')
+api.add_resource(RegisterDevice, '/device')
 
 
 def start_server():
