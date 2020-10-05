@@ -1,11 +1,17 @@
 # element = {0001:  'start':    10}
 #            SN     operation   value
 # 1 - start
-# 2 - start_not
-# 3 - or
-# 4 - and
-# 5 - or_not
-# 6 - and_not
+# 2 - or
+# 3 - and
+# 4 - xor
+# 5 - nor
+# 6 - nand
+# 7 - xnor
+# 8 - not   note: just invert prev value, it doesn`t matter SN or VALUE {ffff: 8: 0}
+# constants:
+# sensor with address fffe always equal 0
+# sensor with address ffff always equal 1
+
 import time
 from flask import jsonify, request, Response
 from flask_restful import Resource
@@ -22,23 +28,11 @@ class TestEndpoint(Resource):
                 {
                     "brch":
                         [
-                            "{out: 3}", "{s01: 3}", "{s02: 3}", "{s03: 3}"
+                            "{out: 2}"
                         ],
                     "out":
                         [
-                            "{0A02: 1: 12}", "{0A03: 4: 12}", "{s01: 4}", "{s02, 6}"
-                        ],
-                    "s01":
-                        [
-                            "{0A03: 1: 12}", "{s03: 4}", "{0A07: 3: 12}"
-                        ],
-                    "s02":
-                        [
-                            "{0A03: 1: 12}", "{0A05: 4: 12}", "{s03: 4}"
-                        ],
-                    "s03":
-                        [
-                            "{0A03: 1: 12}", "{0A05: 4: 12}", "{0A07: 3: 12}"
+                            "{00a1: 1: 1}", "{00c4: 3: 70}"
                         ]
                 }
         })

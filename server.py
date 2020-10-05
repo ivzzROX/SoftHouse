@@ -19,8 +19,8 @@ api.add_resource(RegisterDevice, '/device')
 
 
 def start_server():
-    app.run(host='127.0.0.1', port=config.HTTP_PORT)
+    app.run(host='0.0.0.0', port=config.HTTP_PORT)
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=config.HTTP_PORT)
+    app.run(host='0.0.0.0', port=config.HTTP_PORT)
