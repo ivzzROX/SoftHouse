@@ -113,7 +113,7 @@
 	var linkCounter = 0;
 	var tempF;
 	
-	function removeA(arr) {
+	function removeA(arr) { // SPIZENO S SO
 		var what, a = arguments, L = a.length, ax;
 		while (L > 1 && arr.length) {
 			what = a[--L];
@@ -306,6 +306,18 @@
 		return 0;
 	}
 	
+	function isCoordOnLinkCenter(x, y, link) {
+		var xLinkCenter = (link.from.x + link.to.x + 50) / 2;
+		var yLinkCenter = (link.from.y + link.to.y + 70) / 2;
+				
+		if( x > xLinkCenter - 40 && x < xLinkCenter + 40 &&
+			y > yLinkCenter - 40 && y < yLinkCenter + 40)
+		{
+			return 1;
+		}
+		return 0;
+	}
+	
 	function setSecondLinkPoint(x, y) {
 		objectList.forEach(function(obj) {
 			if(obj.type == "LOGIC") {
@@ -412,8 +424,8 @@
 		if(radAction[2].checked) //DELETE
 		{
 			objectList.forEach(function(obj) { //DELETE LOGIC
-				if(isCoordOnElement(x, y, obj))
-				{
+				if(isCoordOnElement(x, y, obj)) {
+				
 					removeA(objectList, obj); // REMOVE ELEMENT FROM LIST
 					
 					linkList.forEach(function(link) { // REMOVE LINKS ASSOCIATED WITH ELEMENT
@@ -425,12 +437,7 @@
 			});
 			
 			linkList.forEach(function(link) { //DELETE LINK
-				var xLinkCenter = (link.from.x + link.to.x + 50) / 2;
-				var yLinkCenter = (link.from.y + link.to.y + 70) / 2;
-				
-				if( x > xLinkCenter - 40 && x < xLinkCenter + 40 &&
-					y > yLinkCenter - 40 && y < yLinkCenter + 40)
-				{
+				if(isCoordOnLinkCenter(x, y, link)) {
 					removeA(linkList, link);
 				}
 			});
@@ -440,7 +447,7 @@
 	}, false);
 	
 	
-	//ENABLE OR DISABLE MENU ELEMENTS
+	//ENABLE OR DISABLE MENU ELEMENTS, DOESN`T WORK CORRECTLY
 	var radAction = document.getElementsByName('action');
 	var radBox = document.getElementsByName('box');
 	
@@ -511,7 +518,7 @@
 		while(linkList.length > 0) {
 			linkList.pop();
 		}
-		canvasRedrawFromList();
+		canvasClear();
 	}
 
 </script>
