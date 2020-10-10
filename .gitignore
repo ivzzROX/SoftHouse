@@ -138,3 +138,6 @@ dmypy.json
 /.idea/SoftHouse.iml
 /.idea/vcs.xml
 /.idea/misc.xml
+
+
+*.db
