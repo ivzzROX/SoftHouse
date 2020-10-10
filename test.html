@@ -51,7 +51,6 @@
 <p>&nbsp;ACTION</p>
 <p><input name="action" type="radio" value="LINK" checked>LINK</p>
 <p><input name="action" type="radio" value="DRAW">DRAW</p>
-<p><input name="action" type="radio" value="DEL">DELETE</p>
 </div>
 <p></p>
 <div class="border">
@@ -124,6 +123,20 @@
 		return arr;
 	}
 	
+	function drawBoxDeleteZone(x, y) {
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		
+		ctx.beginPath(); // DRAW DELETE ZONE
+		ctx.fillStyle = "#ffffff";
+		ctx.arc(x - 15, y + 25, 5, 0, 2 * Math.PI);
+		ctx.fill();
+		ctx.font = "12px Arial";
+		ctx.fillStyle = "#000000";
+		ctx.fillText('x', x - 18, y + 28);
+		ctx.stroke();
+	}
+	
 	function drawOutput(x, y) {
 		var canvas = document.getElementById("myCanvas");
 		var ctx = canvas.getContext("2d");
@@ -139,6 +152,8 @@
 		ctx.moveTo(x - 25, y); //piska
 		ctx.lineTo(x - 35, y);
 		ctx.stroke();
+		
+		drawBoxDeleteZone(x, y);
 	}
 	
 	function drawInput(x, y, t) {
@@ -155,6 +170,8 @@
 		ctx.moveTo(x + 25, y); //piska
 		ctx.lineTo(x + 35, y);
 		ctx.stroke();
+		
+		drawBoxDeleteZone(x, y);
 	}
 	
 	function drawLogic(x, y, v, c) {
@@ -181,6 +198,8 @@
 		ctx.moveTo(x - 25, y - 20); //ese piska s drugoi storoni
 		ctx.lineTo(x - 35, y - 20);
 		ctx.stroke();
+		
+		drawBoxDeleteZone(x, y);
 	}
 	
 	function drawLogicFromArray(){
@@ -279,6 +298,15 @@
 		return 0;
 	}	
 	
+	function isCoordElementDeleteZone(x, y, obj) {
+		if( x > obj.x + 10 && x < obj.x + 30 &&
+			y > obj.y + 60 && y < obj.y + 75) 
+		{
+			return 1;
+		}
+		return 0;
+	}	
+	
 	function isCoordOnLogicInputUp(x, y, obj) {
 		if( x > obj.x - 40 && x < obj.x + 20 &&
 			y > obj.y - 20 && y < obj.y + 30)  
@@ -316,6 +344,16 @@
 			return 1;
 		}
 		return 0;
+	}
+	
+	function deleteElement(obj) {
+		removeA(objectList, obj); // REMOVE ELEMENT FROM LIST
+					
+		linkList.forEach(function(link) { // REMOVE LINKS ASSOCIATED WITH ELEMENT
+			if(link.from == obj || link.to == obj) {
+				removeA(linkList, link);
+			}
+		});
 	}
 	
 	function setSecondLinkPoint(x, y) {
@@ -365,12 +403,28 @@
 			}
 		}
 		
+		objectList.forEach(function(obj) {
+			if(isCoordElementDeleteZone(x, y, obj)) {
+				deleteElement(obj);
+				canvasRedrawFromList();
+				addNewObj = 0;
+			}
+		});
+		
+		linkList.forEach(function(link) { 
+			if(isCoordOnLinkCenter(x, y, link)) {
+				removeA(linkList, link);
+				canvasRedrawFromList();
+				addNewObj = 0;
+			}
+		});
+		
 		if(radAction[1].checked) //DRAW ELEMENTS
 		{
 			objectList.forEach(function(obj) { // COLLISION DETECT
 				if(isCoordOnElement(x, y, obj))
 				{
-					console.log("collision");
+					//console.log("collision");
 					addNewObj = 0;
 				}
 			});
@@ -421,29 +475,6 @@
 				}
 			}
 		}
-		if(radAction[2].checked) //DELETE
-		{
-			objectList.forEach(function(obj) { //DELETE LOGIC
-				if(isCoordOnElement(x, y, obj)) {
-				
-					removeA(objectList, obj); // REMOVE ELEMENT FROM LIST
-					
-					linkList.forEach(function(link) { // REMOVE LINKS ASSOCIATED WITH ELEMENT
-						if(link.from == obj || link.to == obj) {
-							removeA(linkList, link);
-						}
-					});
-				}
-			});
-			
-			linkList.forEach(function(link) { //DELETE LINK
-				if(isCoordOnLinkCenter(x, y, link)) {
-					removeA(linkList, link);
-				}
-			});
-			
-			canvasRedrawFromList();
-		}
 	}, false);
 	
 	
@@ -465,15 +496,6 @@
 			for (var i = 0; i < radBox.length; i++) {
 				radBox[i].disabled = false;
 			}
-		}
-	}, false);
-	
-	radAction[2].addEventListener('change', function(event) {
-		if(radAction[2].checked){
-			for (var i = 0; i < radBox.length; i++) {
-				radBox[i].disabled = true;
-			}
-			document.getElementById('lg').disabled = true;
 		}
 	}, false);
 	
