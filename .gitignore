@@ -131,4 +131,10 @@ dmypy.json
 
 # PyCharm stuff
 .idea
-idea/
+/.idea/.gitignore
+/.idea/dataSources
+/.idea/inspectionProfiles
+/.idea/modules.xml
+/.idea/SoftHouse.iml
+/.idea/vcs.xml
+/.idea/misc.xml
