@@ -1,4 +1,5 @@
 from peewee import *
+from playhouse.cockroachdb import JSONField
 
 from config import BaseModel
 
@@ -12,6 +13,11 @@ class Sensors(BaseModel):
 class Devices(BaseModel):
     serial_number = CharField()
     hr_name = CharField(null=True)
+
+#
+# class Logic(BaseModel):
+#     output_id = IntegerField()
+#     logic = JSONField()
 
 
 if __name__ =='__main__':

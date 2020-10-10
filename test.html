@@ -1,525 +1,552 @@
-<html>
+<html lang="eng">
 
 <head>
 
-<style>
-	body{
-    background-color: #424242;
-	} 
-	.canvas_layer
-	{
-	position: fixed;
-	float: left;
-	}
-	
-	.menu
-	{
-	position: fixed;
-	left: 15px;
-	width: 180;
-	}
-	
-	.border
-	{
-	border-style: dotted; 
-	border-width: 2;
-	background-color: #b5b5b5;
-	}
+    <style>
+        body {
+            background-color: #424242;
+        }
 
-</style>
+        .canvas_layer {
+            position: fixed;
+            float: left;
+        }
+
+        .menu {
+            position: fixed;
+            left: 15px;
+            width: 180px;
+        }
+
+        .border {
+            border-style: dotted;
+            border-width: 2px;
+            background-color: #b5b5b5;
+        }
+
+    </style>
+    <title></title>
 </head>
 
 <body>
 
-<div class="canvas_layer"><canvas id="myCanvas" width="1" height="1" style="border:1px solid #d3d3d3;"></div>
+<div class="canvas_layer">
+    <canvas id="myCanvas" width="1" height="1" style="border:1px solid #d3d3d3;">
+</div>
 
 <div id="menu" class="menu">
-<div class="border">
-<p>&nbsp;OUTPUT</p>&nbsp;
-<select id="out">
-  <option value="1" selected>1</option> 
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
-</select>
-<p></p>
-</div>
-<p></p>
-<div class="border">
-<p>&nbsp;ACTION</p>
-<p><input name="action" type="radio" value="LINK" checked>LINK</p>
-<p><input name="action" type="radio" value="DRAW">DRAW</p>
-<p><input name="action" type="radio" value="DEL">DELETE</p>
-</div>
-<p></p>
-<div class="border">
-<p>&nbsp;ELEMENT</p>
-<p><input name="box" type="radio" value="INPUT" checked disabled>INPUT</p>
-<p><input name="box" type="radio" value="LOGIC" disabled>LOGIC</p>
-<p><input name="box" type="radio" value="OUTPUT" disabled>OUTPUT</p>
-</div>
-<p></p>
-<div class="border">
-<p>&nbsp;LOGIC</p>&nbsp;
-<select name="logic" id="lg" disabled>
-  <option value="AND" selected>AND</option> 
-  <option value="OR">OR</option>
-  <option value="XOR">XOR</option>
-  <option value="NAND">NAND</option>
-  <option value="NOR">NOR</option>
-  <option value="XNOR">XNOR</option>
-</select>
-<p></p>
-</div>
-<p></p>
-<div class="border">
-<p>&nbsp;INPUT</p>&nbsp;
-<select name="input" id="input">
-  <option value="SENSOR" selected>SENSOR</option>
-  <option value="TIME">CONST</option>
-  <option value="TIME">TIME</option> 
-  <option value="DAY OF WEEK">DAY OF WEEK</option> 
-  <option value="PMO">PMO</option> 
-  <option value="INO">INO</option> 
-  <option value="WEB">WEB</option>
-</select>
-<p>&nbsp;<input id="txt" type="text" size="9"></p>
-<p>&nbsp;<input id="tm" type="time" disabled></p>
-</div>
-<p></p>
-<div class="border">
-<p>
-	<input type="button" value="SAVE" onclick="save()">
-	<input type="button" value="LOAD" onclick="">
-	<input type="button" value="CLEAN" onclick="clean()">
-</p>
-</div>
-<p></p>
+    <div class="border">
+        <p>&nbsp;OUTPUT</p>
+        <select id="out">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+        </select>
+        <p></p>
+    </div>
+    <p></p>
+    <div class="border">
+        <p>&nbsp;ACTION</p>
+        <p><input name="action" type="radio" value="LINK" checked>LINK</p>
+        <p><input name="action" type="radio" value="DRAW">DRAW</p>
+        <p><input name="action" type="radio" value="DEL">DELETE</p>
+    </div>
+    <p></p>
+    <div class="border">
+        <p>&nbsp;ELEMENT</p>
+        <p><input name="box" type="radio" value="INPUT" checked disabled>INPUT</p>
+        <p><input name="box" type="radio" value="LOGIC" disabled>LOGIC</p>
+        <p><input name="box" type="radio" value="OUTPUT" disabled>OUTPUT</p>
+    </div>
+    <p></p>
+    <div class="border">
+        <p>&nbsp;LOGIC</p>
+        <select name="logic" id="lg" disabled>
+            <option value="AND" selected>AND</option>
+            <option value="OR">OR</option>
+            <option value="XOR">XOR</option>
+            <option value="NAND">NAND</option>
+            <option value="NOR">NOR</option>
+            <option value="XNOR">XNOR</option>
+        </select>
+        <p></p>
+    </div>
+    <p></p>
+    <div class="border">
+        <p>&nbsp;INPUT</p>
+        <select name="input" id="input">
+            <option value="SENSOR" selected>SENSOR</option>
+            <option value="TIME">CONST</option>
+            <option value="TIME">TIME</option>
+            <option value="DAY OF WEEK">DAY OF WEEK</option>
+            <option value="PMO">PMO</option>
+            <option value="INO">INO</option>
+            <option value="WEB">WEB</option>
+        </select>
+        <p><input id="txt" type="text" size="9"></p>
+        <p><input id="tm" type="time" disabled></p>
+    </div>
+    <p></p>
+    <div class="border">
+        <p>
+            <input type="button" value="SAVE" onclick="save()">
+            <input type="button" value="LOAD" onclick="">
+            <input type="button" value="CLEAN" onclick="clean()">
+        </p>
+    </div>
+    <p></p>
 </div>
 
 <script>
-	var canvas = document.getElementById("myCanvas");  
-	canvas.width = window.innerWidth - 200;//screen.availWidth - 200;
-	canvas.height = window.innerHeight - 20;//screen.availHeight - 90;
-	document.getElementById("menu").style.left = canvas.width + 15;
-	
-	var objectList = [];
-	var linkList = [];
-	
-	var clickCounter = 0;
-	var objCounter = 0;
-	var linkCounter = 0;
-	var tempF;
-	
-	function removeA(arr) { // SPIZENO S SO
-		var what, a = arguments, L = a.length, ax;
-		while (L > 1 && arr.length) {
-			what = a[--L];
-			while ((ax= arr.indexOf(what)) !== -1) {
-				arr.splice(ax, 1);
-			}
-		}
-		return arr;
-	}
-	
-	function drawOutput(x, y) {
-		var canvas = document.getElementById("myCanvas");
-		var ctx = canvas.getContext("2d");
-		var outNumber = document.getElementById("out").value;
+    var canvas = document.getElementById("myCanvas");
+    canvas.width = window.innerWidth - 200;//screen.availWidth - 200;
+    canvas.height = window.innerHeight - 20;//screen.availHeight - 90;
+    document.getElementById("menu").style.left = canvas.width + 15;
 
-		ctx.beginPath();
-		ctx.lineWidth = "2";
-		ctx.strokeStyle = "#00ff95";
-		ctx.rect(x - 25, y - 35, 50, 70);
-		ctx.font = "12px Arial";
-		ctx.fillStyle = "#ffffff";
-		ctx.fillText("OUT " + outNumber, x - 15, y);
-		ctx.moveTo(x - 25, y); //piska
-		ctx.lineTo(x - 35, y);
-		ctx.stroke();
-	}
-	
-	function drawInput(x, y, t) {
-		var canvas = document.getElementById("myCanvas");
-		var ctx = canvas.getContext("2d");
+    var objectList = [];
+    var linkList = [];
 
-		ctx.beginPath();
-		ctx.lineWidth = "2";
-		ctx.strokeStyle = "#00f2ff";
-		ctx.rect(x - 25, y - 35, 50, 70);
-		ctx.font = "12px Arial";
-		ctx.fillStyle = "#ffffff";
-		ctx.fillText(t, x - 15, y);
-		ctx.moveTo(x + 25, y); //piska
-		ctx.lineTo(x + 35, y);
-		ctx.stroke();
-	}
-	
-	function drawLogic(x, y, v, c) {
-		var canvas = document.getElementById("myCanvas");
-		var ctx = canvas.getContext("2d");
-		
-		ctx.beginPath();
-		ctx.lineWidth = "2";
-		ctx.strokeStyle = "#ff0080";
-		if(c) {
-			
-			ctx.fillStyle = "#ff0080";
-			ctx.arc(x + 25, y, 5, 0, 2 * Math.PI);
-			ctx.fill();
-		}
-		ctx.rect(x - 25, y - 35, 50, 70);
-		ctx.font = "12px Arial";
-		ctx.fillStyle = "#ffffff";
-		ctx.fillText(v, x - 15, y);
-		ctx.moveTo(x + 25, y); //piska
-		ctx.lineTo(x + 35, y);
-		ctx.moveTo(x - 25, y + 20); //piska s drugoi storoni
-		ctx.lineTo(x - 35, y + 20);
-		ctx.moveTo(x - 25, y - 20); //ese piska s drugoi storoni
-		ctx.lineTo(x - 35, y - 20);
-		ctx.stroke();
-	}
-	
-	function drawLogicFromArray(){
-		objectList.forEach(function(obj) {
-			if(obj.type == "INPUT") {
-				drawInput(obj.x + 25, obj.y + 35, obj.t);
-			}
-			if(obj.type == "OUTPUT") {
-				drawOutput(obj.x + 25, obj.y + 35);
-			}
-			if(obj.type == "LOGIC") {
-				var lv = obj.logicType;
-				if(lv == "AND" || lv == "OR" || lv == "XOR") {
-					drawLogic(obj.x + 25, obj.y + 35, lv, 0);
-				} else {
-					drawLogic(obj.x + 25, obj.y + 35, lv, 1);
-				}
-			}
-		});
-	}
-	
-	function drawLine(fx, fy, tx, ty) {
-		var canvas = document.getElementById("myCanvas");
-		var ctx = canvas.getContext("2d");
-		ctx.beginPath();
-		ctx.lineWidth = "2";
-		ctx.strokeStyle = "#FFFFFF";
-		ctx.moveTo(fx, fy);
-		ctx.lineTo(tx, ty);
-		ctx.stroke();
-		
-		ctx.beginPath(); // DRAW DELETE ZONE
-		ctx.fillStyle = "#ffffff";
-		ctx.arc((fx + tx) / 2, (fy + ty) / 2, 5, 0, 2 * Math.PI);
-		ctx.fill();
-		ctx.font = "12px Arial";
-		ctx.fillStyle = "#000000";
-		ctx.fillText('x', (fx + tx - 6) / 2, (fy + ty + 6) / 2);
-		ctx.stroke();
-	}
-	
-	function drawLineFromArray() {
-		linkList.forEach(function(obj) {
-			if(obj.to.type == "LOGIC") {
-				if(obj.up) {
-					drawLine(obj.from.x + 55 , obj.from.y + 35, obj.to.x - 5, obj.to.y + 15);
-				} else {
-					drawLine(obj.from.x + 55 , obj.from.y + 35, obj.to.x - 5, obj.to.y + 55);
-				}
-			}
-			if(obj.to.type == "OUTPUT") {
-				drawLine(obj.from.x + 55, obj.from.y + 35, obj.to.x - 5, obj.to.y + 35);
-			}
-		});
-	}
-	
-	function canvasClear() {
-		var canvas = document.getElementById("myCanvas");
-		var ctx = canvas.getContext("2d");
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-	}
-	
-	function canvasRedrawFromList() {
-		canvasClear();
-		drawLogicFromArray();
-		drawLineFromArray();
-	}
-	
-	function pushLink(to, from, up) {
-		var linkObj = new Object();
-		linkObj.to = to;
-		linkObj.from = from;
-		linkObj.up = up;
-		linkObj.id = linkCounter;
-		linkCounter++;
-		linkList.push(linkObj);
-	}
-	
-	function setFirstLinkPoint(x, y) {
-		objectList.forEach(function(obj) { 
-			if( x > obj.x + 35 && x < obj.x + 75 &&
-				y > obj.y - 15 && y < obj.y + 55) 
-			{
-				tempF = obj;
-				clickCounter = 1;
-			}
-		});
-	}
-	
-	function isCoordOnElement(x, y, obj) {
-		if( x > obj.x - 40 && x < obj.x + 90 &&
-			y > obj.y - 40 && y < obj.y + 110) 
-		{
-			return 1;
-		}
-		return 0;
-	}	
-	
-	function isCoordOnLogicInputUp(x, y, obj) {
-		if( x > obj.x - 40 && x < obj.x + 20 &&
-			y > obj.y - 20 && y < obj.y + 30)  
-		{
-			return 1;
-		}
-		return 0;
-	}
-	
-	function isCoordOnLogicInputDown(x, y, obj) {
-		if( x > obj.x - 40 && x < obj.x + 20 &&
-			y > obj.y + 40 && y < obj.y + 90)  
-		{
-			return 1;
-		}
-		return 0;
-	}
-	
-	function isCoordOnOut(x, y, obj) {
-		if( x > obj.x - 40 && x < obj.x + 20 &&
-			y > obj.y - 15 && y < obj.y + 55)   
-		{
-			return 1;
-		}
-		return 0;
-	}
-	
-	function isCoordOnLinkCenter(x, y, link) {
-		var xLinkCenter = (link.from.x + link.to.x + 50) / 2;
-		var yLinkCenter = (link.from.y + link.to.y + 70) / 2;
-				
-		if( x > xLinkCenter - 40 && x < xLinkCenter + 40 &&
-			y > yLinkCenter - 40 && y < yLinkCenter + 40)
-		{
-			return 1;
-		}
-		return 0;
-	}
-	
-	function setSecondLinkPoint(x, y) {
-		objectList.forEach(function(obj) {
-			if(obj.type == "LOGIC") {
-				if(isCoordOnLogicInputUp(x, y, obj)) {
-					drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 15);
-					pushLink(obj, tempF, 1);
-					clickCounter = 0;
-				}
-				if(isCoordOnLogicInputDown(x, y, obj)) {
-					drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 55);
-					pushLink(obj, tempF, 0);
-					clickCounter = 0;
-					
-				}
-			}
-			if(obj.type == "OUTPUT") {
-				if(isCoordOnOut(x, y, obj)) {
-					drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 35);
-					pushLink(obj, tempF, 0);
-					clickCounter = 0;
-				}
-			}
-		});
-	}
-	
-	canvas.addEventListener('click', function(event) {
-		
-		var canvas = document.getElementById("myCanvas");
-		var radAction = document.getElementsByName('action');
-		
-		var x = event.clientX - canvas.offsetLeft;
-		var	y = event.clientY - canvas.offsetTop;
-		var addNewObj = 1;
-		
-		if(radAction[0].checked) //DRAW LINK
-		{
-			if(clickCounter == 1) //DRAW LINE ON SECOND CLICK
-			{
-				setSecondLinkPoint(x, y);
-			}	
-			
-			if(clickCounter == 0) //SET FIRST POINT ON FIRST CLICK
-			{
-				setFirstLinkPoint(x, y);
-			}
-		}
-		
-		if(radAction[1].checked) //DRAW ELEMENTS
-		{
-			objectList.forEach(function(obj) { // COLLISION DETECT
-				if(isCoordOnElement(x, y, obj))
-				{
-					console.log("collision");
-					addNewObj = 0;
-				}
-			});
-			
-			if(addNewObj)
-			{
-				var radBox = document.getElementsByName('box');
-				var myObj = new Object();
-				myObj.x = x - 25;
-				myObj.y = y - 35;
+    var clickCounter = 0;
+    var objCounter = 0;
+    var linkCounter = 0;
+    var tempF;
 
-				if(radBox[0].checked) // DRAW INPUT
-				{
-					myObj.type = radBox[0].value;
-					var txt = document.getElementById("txt").value;
-					drawInput(x, y, txt);
-					myObj.t = txt;
-					myObj.id = objCounter;
-					objCounter++;
-					objectList.push(myObj);
-				}
-				
-				if(radBox[2].checked) // DRAW OUTPUT
-				{
-					myObj.type = radBox[2].value;
-					drawOutput(x, y);
-					myObj.id = objCounter;
-					objCounter++;
-					objectList.push(myObj);
-				}
-		
-				if(radBox[1].checked) // DRAW LOGIC ELEMENT
-				{
-					var logicChecked = 0;
+    function removeA(arr) { // SPIZENO S SO
+        var what, a = arguments, L = a.length, ax;
+        while (L > 1 && arr.length) {
+            what = a[--L];
+            while ((ax = arr.indexOf(what)) !== -1) {
+                arr.splice(ax, 1);
+            }
+        }
+        return arr;
+    }
 
-					myObj.type = radBox[1].value;
-					var sel = document.getElementById('lg');
-					var lv = sel.options[sel.selectedIndex].value;
-					if(lv == "AND" || lv == "OR" || lv == "XOR") {
-						drawLogic(x, y, lv, 0);
-					} else {
-						drawLogic(x, y, lv, 1);
-					}
-					myObj.logicType = lv;
-					myObj.id = objCounter;
-					objCounter++;
-					objectList.push(myObj);
-				}
-			}
-		}
-		if(radAction[2].checked) //DELETE
-		{
-			objectList.forEach(function(obj) { //DELETE LOGIC
-				if(isCoordOnElement(x, y, obj)) {
-				
-					removeA(objectList, obj); // REMOVE ELEMENT FROM LIST
-					
-					linkList.forEach(function(link) { // REMOVE LINKS ASSOCIATED WITH ELEMENT
-						if(link.from == obj || link.to == obj) {
-							removeA(linkList, link);
-						}
-					});
-				}
-			});
-			
-			linkList.forEach(function(link) { //DELETE LINK
-				if(isCoordOnLinkCenter(x, y, link)) {
-					removeA(linkList, link);
-				}
-			});
-			
-			canvasRedrawFromList();
-		}
-	}, false);
-	
-	
-	//ENABLE OR DISABLE MENU ELEMENTS, DOESN`T WORK CORRECTLY
-	var radAction = document.getElementsByName('action');
-	var radBox = document.getElementsByName('box');
-	
-	radAction[0].addEventListener('change', function(event) {
-		if(radAction[0].checked){
-			for (var i = 0; i < radBox.length; i++) {
-				radBox[i].disabled = true;
-			}
-			document.getElementById('lg').disabled = true;
-		}
-	}, false);
-	
-	radAction[1].addEventListener('change', function(event) {
-		if(radAction[1].checked) {
-			for (var i = 0; i < radBox.length; i++) {
-				radBox[i].disabled = false;
-			}
-		}
-	}, false);
-	
-	radAction[2].addEventListener('change', function(event) {
-		if(radAction[2].checked){
-			for (var i = 0; i < radBox.length; i++) {
-				radBox[i].disabled = true;
-			}
-			document.getElementById('lg').disabled = true;
-		}
-	}, false);
-	
-	radBox[0].addEventListener('change', function(event) {
-		if(radBox[0].checked) {
-			document.getElementById('lg').disabled = true;
-			document.getElementById('input').disabled = false;
-			document.getElementById('txt').disabled = false;
-		}
-	}, false);
-	
-	radBox[1].addEventListener('change', function(event) {
-		if(radBox[1].checked) {
-			document.getElementById('lg').disabled = false;
-			document.getElementById('input').disabled = true;
-			document.getElementById('txt').disabled = true;
-		}
-	}, false);
-	
-	radBox[2].addEventListener('change', function(event) {
-		if(radBox[2].checked) {
-			document.getElementById('lg').disabled = true;
-			document.getElementById('input').disabled = true;
-			document.getElementById('txt').disabled = true;
-		}
-	}, false);
-		
-	function save() {
-		objectList.forEach(function(obj) {
-			console.log("obj: " + obj.id + " type: " + obj.type + " logic: " + obj.logicType);
-		});
-	
-		linkList.forEach(function(link) {
-			console.log("link: " + link.id + " from obj: " + link.from.id + " to obj: " + link.to.id);
-		});
-	}
-	
-	function clean() {
-		while(objectList.length > 0) {
-			objectList.pop();
-		}
-		while(linkList.length > 0) {
-			linkList.pop();
-		}
-		canvasClear();
-	}
+    function drawOutput(x, y) {
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        var outNumber = document.getElementById("out").value;
+
+        ctx.beginPath();
+        ctx.lineWidth = "2";
+        ctx.strokeStyle = "#00ff95";
+        ctx.rect(x - 25, y - 35, 50, 70);
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText("OUT " + outNumber, x - 15, y);
+        ctx.moveTo(x - 25, y); //piska
+        ctx.lineTo(x - 35, y);
+        ctx.stroke();
+    }
+
+    function drawInput(x, y, t) {
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        ctx.beginPath();
+        ctx.lineWidth = "2";
+        ctx.strokeStyle = "#00f2ff";
+        ctx.rect(x - 25, y - 35, 50, 70);
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(t, x - 15, y);
+        ctx.moveTo(x + 25, y); //piska
+        ctx.lineTo(x + 35, y);
+        ctx.stroke();
+    }
+
+    function drawLogic(x, y, v, c) {
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        ctx.beginPath();
+        ctx.lineWidth = "2";
+        ctx.strokeStyle = "#ff0080";
+        if (c) {
+
+            ctx.fillStyle = "#ff0080";
+            ctx.arc(x + 25, y, 5, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        ctx.rect(x - 25, y - 35, 50, 70);
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(v, x - 15, y);
+        ctx.moveTo(x + 25, y); //piska
+        ctx.lineTo(x + 35, y);
+        ctx.moveTo(x - 25, y + 20); //piska s drugoi storoni
+        ctx.lineTo(x - 35, y + 20);
+        ctx.moveTo(x - 25, y - 20); //ese piska s drugoi storoni
+        ctx.lineTo(x - 35, y - 20);
+        ctx.stroke();
+    }
+
+    function drawLogicFromArray() {
+        objectList.forEach(function (obj) {
+            if (obj.type === "INPUT") {
+                drawInput(obj.x + 25, obj.y + 35, obj.t);
+            }
+            if (obj.type === "OUTPUT") {
+                drawOutput(obj.x + 25, obj.y + 35);
+            }
+            if (obj.type === "LOGIC") {
+                var lv = obj.logicType;
+                if (lv === "AND" || lv === "OR" || lv === "XOR") {
+                    drawLogic(obj.x + 25, obj.y + 35, lv, 0);
+                } else {
+                    drawLogic(obj.x + 25, obj.y + 35, lv, 1);
+                }
+            }
+        });
+    }
+
+    function drawLine(fx, fy, tx, ty) {
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.lineWidth = "2";
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.moveTo(fx, fy);
+        ctx.lineTo(tx, ty);
+        ctx.stroke();
+
+        ctx.beginPath(); // DRAW DELETE ZONE
+        ctx.fillStyle = "#ffffff";
+        ctx.arc((fx + tx) / 2, (fy + ty) / 2, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "#000000";
+        ctx.fillText('x', (fx + tx - 6) / 2, (fy + ty + 6) / 2);
+        ctx.stroke();
+    }
+
+    function drawLineFromArray() {
+        linkList.forEach(function (obj) {
+            if (obj.to.type === "LOGIC") {
+                if (obj.up) {
+                    drawLine(obj.from.x + 55, obj.from.y + 35, obj.to.x - 5, obj.to.y + 15);
+                } else {
+                    drawLine(obj.from.x + 55, obj.from.y + 35, obj.to.x - 5, obj.to.y + 55);
+                }
+            }
+            if (obj.to.type === "OUTPUT") {
+                drawLine(obj.from.x + 55, obj.from.y + 35, obj.to.x - 5, obj.to.y + 35);
+            }
+        });
+    }
+
+    function canvasClear() {
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function canvasRedrawFromList() {
+        canvasClear();
+        drawLogicFromArray();
+        drawLineFromArray();
+    }
+
+    function pushLink(to, from, up) {
+        var linkObj = new Object();
+        linkObj.to = to;
+        linkObj.from = from;
+        linkObj.up = up;
+        linkObj.id = linkCounter;
+        linkCounter++;
+        linkList.push(linkObj);
+    }
+
+    function setFirstLinkPoint(x, y) {
+        objectList.forEach(function (obj) {
+            if (x > obj.x + 35 && x < obj.x + 75 &&
+                y > obj.y - 15 && y < obj.y + 55) {
+                tempF = obj;
+                clickCounter = 1;
+            }
+        });
+    }
+
+    function isCoordOnElement(x, y, obj) {
+        if (x > obj.x - 40 && x < obj.x + 90 &&
+            y > obj.y - 40 && y < obj.y + 110) {
+            return 1;
+        }
+        return 0;
+    }
+
+    function isCoordOnLogicInputUp(x, y, obj) {
+        if (x > obj.x - 40 && x < obj.x + 20 &&
+            y > obj.y - 20 && y < obj.y + 30) {
+            return 1;
+        }
+        return 0;
+    }
+
+    function isCoordOnLogicInputDown(x, y, obj) {
+        if (x > obj.x - 40 && x < obj.x + 20 &&
+            y > obj.y + 40 && y < obj.y + 90) {
+            return 1;
+        }
+        return 0;
+    }
+
+    function isCoordOnOut(x, y, obj) {
+        if (x > obj.x - 40 && x < obj.x + 20 &&
+            y > obj.y - 15 && y < obj.y + 55) {
+            return 1;
+        }
+        return 0;
+    }
+
+    function isCoordOnLinkCenter(x, y, link) {
+        var xLinkCenter = (link.from.x + link.to.x + 50) / 2;
+        var yLinkCenter = (link.from.y + link.to.y + 70) / 2;
+
+        if (x > xLinkCenter - 40 && x < xLinkCenter + 40 &&
+            y > yLinkCenter - 40 && y < yLinkCenter + 40) {
+            return 1;
+        }
+        return 0;
+    }
+
+    function setSecondLinkPoint(x, y) {
+        objectList.forEach(function (obj) {
+            if (obj.type === "LOGIC") {
+                if (isCoordOnLogicInputUp(x, y, obj)) {
+                    drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 15);
+                    pushLink(obj, tempF, 1);
+                    clickCounter = 0;
+                }
+                if (isCoordOnLogicInputDown(x, y, obj)) {
+                    drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 55);
+                    pushLink(obj, tempF, 0);
+                    clickCounter = 0;
+
+                }
+            }
+            if (obj.type === "OUTPUT") {
+                if (isCoordOnOut(x, y, obj)) {
+                    drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 35);
+                    pushLink(obj, tempF, 0);
+                    clickCounter = 0;
+                }
+            }
+        });
+    }
+
+    canvas.addEventListener('click', function (event) {
+
+        var canvas = document.getElementById("myCanvas");
+        var radAction = document.getElementsByName('action');
+
+        var x = event.clientX - canvas.offsetLeft;
+        var y = event.clientY - canvas.offsetTop;
+        var addNewObj = 1;
+
+        if (radAction[0].checked) //DRAW LINK
+        {
+            if (clickCounter === 1) //DRAW LINE ON SECOND CLICK
+            {
+                setSecondLinkPoint(x, y);
+            }
+
+            if (clickCounter === 0) //SET FIRST POINT ON FIRST CLICK
+            {
+                setFirstLinkPoint(x, y);
+            }
+        }
+
+        if (radAction[1].checked) //DRAW ELEMENTS
+        {
+            objectList.forEach(function (obj) { // COLLISION DETECT
+                if (isCoordOnElement(x, y, obj)) {
+                    console.log("collision");
+                    addNewObj = 0;
+                }
+            });
+
+            if (addNewObj) {
+                var radBox = document.getElementsByName('box');
+                var myObj = new Object();
+                myObj.x = x - 25;
+                myObj.y = y - 35;
+
+                if (radBox[0].checked) // DRAW INPUT
+                {
+                    myObj.type = radBox[0].value;
+                    var txt = document.getElementById("txt").value;
+                    drawInput(x, y, txt);
+                    myObj.t = txt;
+                    myObj.id = objCounter;
+                    objCounter++;
+                    objectList.push(myObj);
+                }
+
+                if (radBox[2].checked) // DRAW OUTPUT
+                {
+                    myObj.type = radBox[2].value;
+                    drawOutput(x, y);
+                    myObj.id = objCounter;
+                    objCounter++;
+                    objectList.push(myObj);
+                }
+
+                if (radBox[1].checked) // DRAW LOGIC ELEMENT
+                {
+                    var logicChecked = 0;
+
+                    myObj.type = radBox[1].value;
+                    var sel = document.getElementById('lg');
+                    var lv = sel.options[sel.selectedIndex].value;
+                    if (lv === "AND" || lv === "OR" || lv === "XOR") {
+                        drawLogic(x, y, lv, 0);
+                    } else {
+                        drawLogic(x, y, lv, 1);
+                    }
+                    myObj.logicType = lv;
+                    myObj.id = objCounter;
+                    objCounter++;
+                    objectList.push(myObj);
+                }
+            }
+        }
+        if (radAction[2].checked) //DELETE
+        {
+            objectList.forEach(function (obj) { //DELETE LOGIC
+                if (isCoordOnElement(x, y, obj)) {
+
+                    removeA(objectList, obj); // REMOVE ELEMENT FROM LIST
+
+                    linkList.forEach(function (link) { // REMOVE LINKS ASSOCIATED WITH ELEMENT
+                        if (link.from === obj || link.to === obj) {
+                            removeA(linkList, link);
+                        }
+                    });
+                }
+            });
+
+            linkList.forEach(function (link) { //DELETE LINK
+                if (isCoordOnLinkCenter(x, y, link)) {
+                    removeA(linkList, link);
+                }
+            });
+
+            canvasRedrawFromList();
+        }
+    }, false);
+
+
+    //ENABLE OR DISABLE MENU ELEMENTS, DOESN`T WORK CORRECTLY
+    var radAction = document.getElementsByName('action');
+    var radBox = document.getElementsByName('box');
+
+    radAction[0].addEventListener('change', function (event) {
+        if (radAction[0].checked) {
+            for (var i = 0; i < radBox.length; i++) {
+                radBox[i].disabled = true;
+            }
+            document.getElementById('lg').disabled = true;
+        }
+    }, false);
+
+    radAction[1].addEventListener('change', function (event) {
+        if (radAction[1].checked) {
+            for (var i = 0; i < radBox.length; i++) {
+                radBox[i].disabled = false;
+            }
+        }
+    }, false);
+
+    radAction[2].addEventListener('change', function (event) {
+        if (radAction[2].checked) {
+            for (var i = 0; i < radBox.length; i++) {
+                radBox[i].disabled = true;
+            }
+            document.getElementById('lg').disabled = true;
+        }
+    }, false);
+
+    radBox[0].addEventListener('change', function (event) {
+        if (radBox[0].checked) {
+            document.getElementById('lg').disabled = true;
+            document.getElementById('input').disabled = false;
+            document.getElementById('txt').disabled = false;
+        }
+    }, false);
+
+    radBox[1].addEventListener('change', function (event) {
+        if (radBox[1].checked) {
+            document.getElementById('lg').disabled = false;
+            document.getElementById('input').disabled = true;
+            document.getElementById('txt').disabled = true;
+        }
+    }, false);
+
+    radBox[2].addEventListener('change', function (event) {
+        if (radBox[2].checked) {
+            document.getElementById('lg').disabled = true;
+            document.getElementById('input').disabled = true;
+            document.getElementById('txt').disabled = true;
+        }
+    }, false);
+
+    async function postData(url = '', data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *client
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return await response.json(); // parses JSON response into native JavaScript objects
+    }
+
+    function save() {
+        var objListClear = objectList;
+        var linkListClear = linkList;
+        objListClear.forEach(function (obj) {
+            delete obj['x']
+            delete obj['y']
+        });
+
+        linkListClear.forEach(function (obj) {
+            delete obj['to']['x']
+            delete obj['from']['y']
+        });
+
+        postData('http://127.0.0.1:5002/logic', {'objects': objectList, 'links': linkList})
+            .then((data) => {
+                console.log(data); // JSON data parsed by `response.json()` call
+            });
+        objectList.forEach(function (obj) {
+            console.log("obj: " + obj.id + " type: " + obj.type + " logic: " + obj.logicType);
+        });
+
+        linkList.forEach(function (link) {
+            console.log("link: " + link.id + " from obj: " + link.from.id + " to obj: " + link.to.id);
+        });
+    }
+
+    function clean() {
+        while (objectList.length > 0) {
+            objectList.pop();
+        }
+        while (linkList.length > 0) {
+            linkList.pop();
+        }
+        canvasClear();
+    }
 
 </script>
 </body>

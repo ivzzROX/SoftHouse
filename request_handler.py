@@ -17,6 +17,7 @@ from flask import jsonify, request, Response
 from flask_restful import Resource
 
 from config import sensor_type
+from data_providers.LogicNode import LogicNode
 from db import Sensors, Devices
 
 
@@ -159,3 +160,19 @@ class RegisterDevice(Resource):
         if Devices.select().where(Devices.serial_number == serial_number).exists():
             return Response(f'Such serial {serial_number} is already exists', status=400)
         Devices.create(serial_number=serial_number)
+
+
+class GetUserLogic(Resource):
+    @staticmethod
+    def post():
+        # print(request.get_json(force=True))
+        objects = request.get_json(force=True).get('objects')
+        links = request.get_json(force=True).get('links')
+        nodes = []
+        for _object in objects:
+            nodes.append(
+                LogicNode(node_type=_object.get('type'), logic_type=_object.get('logicType'), data=_object.get('t')))
+        print(nodes)
+        print(links)
+        for node in nodes:
+            node
