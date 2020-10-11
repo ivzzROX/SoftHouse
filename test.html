@@ -31,7 +31,7 @@
 <body>
 
 <div class="canvas_layer">
-    <canvas id="myCanvas" width="1" height="1" style="border:1px solid #d3d3d3;">
+  <canvas id="myCanvas" width="1" height="1" style="border:1px solid #d3d3d3;"> </canvas>
 </div>
 
 <div id="menu" class="menu">
@@ -205,15 +205,15 @@
 
 	function drawLogicFromArray(){
 		objectList.forEach(function(obj) {
-			if(obj.type == "INPUT") {
+			if(obj.type === "INPUT") {
 				drawInput(obj.x + 25, obj.y + 35, obj.t);
 			}
-			if(obj.type == "OUTPUT") {
+			if(obj.type === "OUTPUT") {
 				drawOutput(obj.x + 25, obj.y + 35);
 			}
-			if(obj.type == "LOGIC") {
+			if(obj.type === "LOGIC") {
 				var lv = obj.logicType;
-				if(lv == "AND" || lv == "OR" || lv == "XOR") {
+				if(lv === "AND" || lv === "OR" || lv === "XOR") {
 					drawLogic(obj.x + 25, obj.y + 35, lv, 0);
 				} else {
 					drawLogic(obj.x + 25, obj.y + 35, lv, 1);
@@ -244,14 +244,14 @@
 
 	function drawLineFromArray() {
 		linkList.forEach(function(obj) {
-			if(obj.to.type == "LOGIC") {
+			if(obj.to.type === "LOGIC") {
 				if(obj.up) {
 					drawLine(obj.from.x + 55 , obj.from.y + 35, obj.to.x - 5, obj.to.y + 15);
 				} else {
 					drawLine(obj.from.x + 55 , obj.from.y + 35, obj.to.x - 5, obj.to.y + 55);
 				}
 			}
-			if(obj.to.type == "OUTPUT") {
+			if(obj.to.type === "OUTPUT") {
 				drawLine(obj.from.x + 55, obj.from.y + 35, obj.to.x - 5, obj.to.y + 35);
 			}
 		});
@@ -351,7 +351,7 @@
 		removeA(objectList, obj); // REMOVE ELEMENT FROM LIST
 
 		linkList.forEach(function(link) { // REMOVE LINKS ASSOCIATED WITH ELEMENT
-			if(link.from == obj || link.to == obj) {
+			if(link.from === obj || link.to == obj) {
 				removeA(linkList, link);
 			}
 		});
@@ -359,7 +359,7 @@
 
 	function setSecondLinkPoint(x, y) {
 		objectList.forEach(function(obj) {
-			if(obj.type == "LOGIC") {
+			if(obj.type === "LOGIC") {
 				if(isCoordOnLogicInputUp(x, y, obj)) {
 					drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 15);
 					pushLink(obj, tempF, 1);
@@ -372,7 +372,7 @@
 
 				}
 			}
-			if(obj.type == "OUTPUT") {
+			if(obj.type === "OUTPUT") {
 				if(isCoordOnOut(x, y, obj)) {
 					drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 35);
 					pushLink(obj, tempF, 0);
@@ -393,12 +393,12 @@
 
 		if(radAction[0].checked) //DRAW LINK
 		{
-			if(clickCounter == 1) //DRAW LINE ON SECOND CLICK
+			if(clickCounter === 1) //DRAW LINE ON SECOND CLICK
 			{
 				setSecondLinkPoint(x, y);
 			}
 
-			if(clickCounter == 0) //SET FIRST POINT ON FIRST CLICK
+			if(clickCounter === 0) //SET FIRST POINT ON FIRST CLICK
 			{
 				setFirstLinkPoint(x, y);
 			}
@@ -464,7 +464,7 @@
 					myObj.type = radBox[1].value;
 					var sel = document.getElementById('lg');
 					var lv = sel.options[sel.selectedIndex].value;
-					if(lv == "AND" || lv == "OR" || lv == "XOR") {
+					if(lv === "AND" || lv === "OR" || lv === "XOR") {
 						drawLogic(x, y, lv, 0);
 					} else {
 						drawLogic(x, y, lv, 1);

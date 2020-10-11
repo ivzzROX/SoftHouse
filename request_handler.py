@@ -12,6 +12,8 @@
 # sensor with address fffe always equal 0
 # sensor with address ffff always equal 1
 
+LOGIC = {"START": 1, "OR": 2, "AND": 3, "XOR": 4, "NOR": 5, "NAND": 6, "XNOR": 7, "NOT": 8}
+
 import time
 from flask import jsonify, request, Response
 from flask_restful import Resource
@@ -162,6 +164,51 @@ class RegisterDevice(Resource):
         Devices.create(serial_number=serial_number)
 
 
+def get_longest_branch(node, counter):
+    if node.node_type == 'OUT':
+        return counter
+    else:
+        get_longest_branch(node.link_to, counter + 1)
+
+
+def check_if_in_longest_branch(node, current_node=None):
+    if not current_node.link_to:
+        raise Exception('Node not found')
+    if current_node == node:
+        return True
+    else:
+        check_if_in_longest_branch(current_node.link_to, node)
+
+
+def form_branch(node, branches, current_branch_id, start_node_for_longest_branch=None):
+    if node.node_type == 'OUTPUT':
+        return form_branch(node.link_from1, branches, current_branch_id=1)
+    if node.link_from1.node_type == 'INPUT' and node.link_from2.node_type == 'INPUT':
+        branches.get(current_branch_id).insert(0, f'{{{node.link_from1.data}: 1: {node.link_from1.data}}}')
+        branches.get(current_branch_id).insert(0, f'{{{node.link_from1.data}: 1: {node.link_from1.data}}}')
+        return branches
+    if (node.link_from1.node_type == 'INPUT' and node.link_from2.node_type == 'LOGIC') or (
+            node.link_from2.node_type == 'INPUT' and node.link_from1.node_type == 'LOGIC'):
+        if node.link_from1.node_type == 'INPUT':
+            branches.get(current_branch_id).insert(0,
+                                                   f'{{{node.link_from1.data}: {node.logic_type}: {node.link_from1.data}}}')
+            return form_branch(node.link_from2, branches, current_branch_id)
+        else:
+            branches.get(current_branch_id).insert(0,
+                                                   f'{{{node.link_from2.data}: {node.logic_type}: {node.link_from2.data}}}')
+            return form_branch(node.link_from1, branches, current_branch_id)
+    if node.link_from1.node_type == 'LOGIC' and node.link_from2.node_type == 'LOGIC':
+        if check_if_in_longest_branch(node.link_from1, start_node_for_longest_branch):
+            form_branch(node.link_from2, branches, current_branch_id)
+        form_branch(node.link_from1, branches, current_branch_id + 1)
+
+
+def get_branches(nodes, start_node_for_longest_branch):
+    out = nodes.get('out')
+    branches = {}
+    form_branch(out, branches, 1)
+
+
 class GetUserLogic(Resource):
     @staticmethod
     def post():
@@ -169,10 +216,26 @@ class GetUserLogic(Resource):
         objects = request.get_json(force=True).get('objects')
         links = request.get_json(force=True).get('links')
         nodes = []
+        nodes_id_dict = {}
         for _object in objects:
-            nodes.append(
-                LogicNode(node_type=_object.get('type'), logic_type=_object.get('logicType'), data=_object.get('t')))
-        print(nodes)
+            node = LogicNode(node_id=_object.get('id'), node_type=_object.get('type'),
+                             logic_type=_object.get('logicType'),
+                             data=_object.get('t'))
+            nodes.append(node)
+
+            nodes_id_dict.update({node.node_id: node})
+            if node.node_type == 'OUTPUT':
+                nodes_id_dict.update({'out': node})
         print(links)
         for node in nodes:
-            node
+            # if node.node_type == 'LOGIC':
+            for link in links:
+                if node.node_id == link.get('to').get('id'):
+                    node_link = nodes_id_dict.get(link.get('from').get('id'))
+                    if not node.link_from1:
+                        node.link_from1 = node_link
+                    else:
+                        node.link_from2 = node_link
+                elif node.node_id == link.get('from').get('id'):
+                    node.link_to = nodes_id_dict.get(link.get('from').get('id'))
+            print(node.print_val() + '\n')
