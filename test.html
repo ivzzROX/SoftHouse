@@ -19,7 +19,7 @@
         }
 
         .border {
-            border-style: dotted;
+            border-style: inset;
             border-width: 2px;
             background-color: #b5b5b5;
         }
@@ -70,6 +70,9 @@
   <option value="NAND">NAND</option>
   <option value="NOR">NOR</option>
   <option value="XNOR">XNOR</option>
+  <option value="NOT">NOT</option> 
+  <option value="T_T">T TRIGGER</option>
+  <option value="RS_T">RS TRIGGER</option>
 </select>
 <p></p>
 </div>
@@ -105,6 +108,10 @@
 	canvas.height = window.innerHeight - 20;//screen.availHeight - 90;
 	document.getElementById("menu").style.left = canvas.width + 15;
 	
+	ctx = canvas.getContext("2d");
+	ctx.fillStyle = "#424242";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	
 	var objectList = [];
 	var linkList = [];
 	
@@ -130,11 +137,11 @@
 
 		ctx.beginPath(); // DRAW DELETE ZONE
 		ctx.fillStyle = "#ffffff";
-		ctx.arc(x - 15, y + 25, 5, 0, 2 * Math.PI);
+		ctx.arc(x + 15, y + 25, 5, 0, 2 * Math.PI);
 		ctx.fill();
 		ctx.font = "12px Arial";
 		ctx.fillStyle = "#000000";
-		ctx.fillText('x', x - 18, y + 28);
+		ctx.fillText('x', x + 12, y + 28);
 		ctx.stroke();
 	}
 
@@ -175,23 +182,57 @@
 		drawBoxDeleteZone(x, y);
 	}
 
-	function drawLogic(x, y, v, c) {
+	function drawLogicSingleInp(x, y, color, v, c) {
 		var canvas = document.getElementById("myCanvas");
 		var ctx = canvas.getContext("2d");
 
 		ctx.beginPath();
 		ctx.lineWidth = "2";
-		ctx.strokeStyle = "#ff0080";
+		ctx.strokeStyle = color;
 		if(c) {
 
-			ctx.fillStyle = "#ff0080";
+			ctx.fillStyle = color;
 			ctx.arc(x + 25, y, 5, 0, 2 * Math.PI);
 			ctx.fill();
 		}
 		ctx.rect(x - 25, y - 35, 50, 70);
 		ctx.font = "12px Arial";
 		ctx.fillStyle = "#ffffff";
-		ctx.fillText(v, x - 15, y);
+		ctx.fillText(v, x - 15, y + 5);
+		ctx.moveTo(x + 25, y); //piska
+		ctx.lineTo(x + 35, y);
+		ctx.moveTo(x - 25, y); //piska
+		ctx.lineTo(x - 35, y);
+		ctx.stroke();
+
+		drawBoxDeleteZone(x, y);
+	}
+	
+	function drawLogic(x, y, color, v, c, t1 = "", t2 = "") {
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+
+		ctx.beginPath();
+		ctx.lineWidth = "2";
+		ctx.strokeStyle = color;;
+		if(c) {
+
+			ctx.fillStyle = color;
+			ctx.arc(x + 25, y, 5, 0, 2 * Math.PI);
+			ctx.fill();
+		}
+		ctx.rect(x - 25, y - 35, 50, 70);
+		ctx.font = "12px Arial";
+		ctx.fillStyle = "#ffffff";
+		ctx.fillText(v, x - 15, y + 5);
+		
+		ctx.font = "12px Arial";
+		ctx.fillStyle = "#ffffff";
+		ctx.fillText(t1, x - 20, y + 25);
+		ctx.font = "12px Arial";
+		ctx.fillStyle = "#ffffff";
+		ctx.fillText(t2, x - 20, y - 15);
+		
 		ctx.moveTo(x + 25, y); //piska
 		ctx.lineTo(x + 35, y);
 		ctx.moveTo(x - 25, y + 20); //piska s drugoi storoni
@@ -203,22 +244,38 @@
 		drawBoxDeleteZone(x, y);
 	}
 
-	function drawLogicFromArray(){
+	function drawLogicByType(x, y, obj) {
+		if(obj.type === "INPUT") {
+			drawInput(x, y, obj.t);
+		}
+		if(obj.type === "OUTPUT") {
+			drawOutput(x, y);
+		}
+		if(obj.type === "LOGIC") {
+			var lv = obj.logicType;
+			if(lv === "NOT") {
+				drawLogicSingleInp(x, y, "#ff002b", lv, 1);
+				return;
+			}
+			if(lv === "T_T") {
+				drawLogicSingleInp(x, y, "#c800ff", lv, 0);
+				return;
+			}
+			if(lv === "RS_T") {
+				drawLogic(x, y, "#c800ff", lv, 0, "R", "S");
+				return;
+			}
+			if(lv === "AND" || lv === "OR" || lv === "XOR") {
+				drawLogic(x, y, "#ff0080", lv, 0);
+			} else { // NAND NOR XNOR
+				drawLogic(x, y, "#ff0080", lv, 1);
+			}
+		}
+	}
+
+	function drawLogicFromArray() {
 		objectList.forEach(function(obj) {
-			if(obj.type === "INPUT") {
-				drawInput(obj.x + 25, obj.y + 35, obj.t);
-			}
-			if(obj.type === "OUTPUT") {
-				drawOutput(obj.x + 25, obj.y + 35);
-			}
-			if(obj.type === "LOGIC") {
-				var lv = obj.logicType;
-				if(lv === "AND" || lv === "OR" || lv === "XOR") {
-					drawLogic(obj.x + 25, obj.y + 35, lv, 0);
-				} else {
-					drawLogic(obj.x + 25, obj.y + 35, lv, 1);
-				}
-			}
+			drawLogicByType(obj.x + 25, obj.y + 35, obj);
 		});
 	}
 
@@ -227,7 +284,7 @@
 		var ctx = canvas.getContext("2d");
 		ctx.beginPath();
 		ctx.lineWidth = "2";
-		ctx.strokeStyle = "#FFFFFF";
+		ctx.strokeStyle = "#ffffff";
 		ctx.moveTo(fx, fy);
 		ctx.lineTo(tx, ty);
 		ctx.stroke();
@@ -245,8 +302,12 @@
 	function drawLineFromArray() {
 		linkList.forEach(function(obj) {
 			if(obj.to.type === "LOGIC") {
+				if(obj.to.logicType === "NOT" || obj.to.logicType === "T_T") {
+					drawLine(obj.from.x + 55, obj.from.y + 35, obj.to.x - 5, obj.to.y + 35);
+					return;
+				}
 				if(obj.up) {
-					drawLine(obj.from.x + 55 , obj.from.y + 35, obj.to.x - 5, obj.to.y + 15);
+					drawLine(obj.from.x + 55, obj.from.y + 35, obj.to.x - 5, obj.to.y + 15);
 				} else {
 					drawLine(obj.from.x + 55 , obj.from.y + 35, obj.to.x - 5, obj.to.y + 55);
 				}
@@ -261,6 +322,8 @@
 		var canvas = document.getElementById("myCanvas");
 		var ctx = canvas.getContext("2d");
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = "#424242";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
 
 	function canvasRedrawFromList() {
@@ -300,7 +363,7 @@
 	}
 
 	function isCoordElementDeleteZone(x, y, obj) {
-		if( x > obj.x + 10 && x < obj.x + 30 &&
+		if( x > obj.x + 40 && x < obj.x + 60 &&
 			y > obj.y + 60 && y < obj.y + 75)
 		{
 			return 1;
@@ -351,15 +414,27 @@
 		removeA(objectList, obj); // REMOVE ELEMENT FROM LIST
 
 		linkList.forEach(function(link) { // REMOVE LINKS ASSOCIATED WITH ELEMENT
-			if(link.from === obj || link.to == obj) {
+			if(link.from === obj || link.to === obj) {
 				removeA(linkList, link);
 			}
 		});
 	}
 
+	function checkLoop(obj) {
+		
+	}
+
 	function setSecondLinkPoint(x, y) {
 		objectList.forEach(function(obj) {
 			if(obj.type === "LOGIC") {
+				if(obj.logicType === "NOT" || obj.logicType === "T_T") {
+					if(isCoordOnOut(x, y, obj)) {
+						drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 35);
+						pushLink(obj, tempF, 0);
+						clickCounter = 0;
+						return;
+					}
+				}
 				if(isCoordOnLogicInputUp(x, y, obj)) {
 					drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 15);
 					pushLink(obj, tempF, 1);
@@ -369,7 +444,6 @@
 					drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 55);
 					pushLink(obj, tempF, 0);
 					clickCounter = 0;
-
 				}
 			}
 			if(obj.type === "OUTPUT") {
@@ -383,7 +457,6 @@
 	}
 
 	canvas.addEventListener('click', function(event) {
-
 		var canvas = document.getElementById("myCanvas");
 		var radAction = document.getElementsByName('action');
 
@@ -404,27 +477,28 @@
 			}
 		}
 
-		objectList.forEach(function(obj) {
+		objectList.forEach(function(obj) { // DELETE ELEMENT
 			if(isCoordElementDeleteZone(x, y, obj)) {
 				deleteElement(obj);
 				canvasRedrawFromList();
 				addNewObj = 0;
+				return;
 			}
 		});
 
-		linkList.forEach(function(link) {
+		linkList.forEach(function(link) { // DELETE LINK
 			if(isCoordOnLinkCenter(x, y, link)) {
 				removeA(linkList, link);
 				canvasRedrawFromList();
 				addNewObj = 0;
+				return;
 			}
 		});
 
 		if(radAction[1].checked) //DRAW ELEMENTS
 		{
 			objectList.forEach(function(obj) { // COLLISION DETECT
-				if(isCoordOnElement(x, y, obj))
-				{
+				if(isCoordOnElement(x, y, obj)) {
 					//console.log("collision");
 					addNewObj = 0;
 				}
@@ -463,13 +537,8 @@
 
 					myObj.type = radBox[1].value;
 					var sel = document.getElementById('lg');
-					var lv = sel.options[sel.selectedIndex].value;
-					if(lv === "AND" || lv === "OR" || lv === "XOR") {
-						drawLogic(x, y, lv, 0);
-					} else {
-						drawLogic(x, y, lv, 1);
-					}
-					myObj.logicType = lv;
+					myObj.logicType = sel.options[sel.selectedIndex].value;
+					drawLogicByType(x, y, myObj);
 					myObj.id = objCounter;
 					objCounter++;
 					objectList.push(myObj);
@@ -523,6 +592,7 @@
 			document.getElementById('txt').disabled = true;
 		}
 	}, false);
+	
 	async function postData(url = '', data = {}) {
         // Default options are marked with *
         const response = await fetch(url, {
@@ -540,7 +610,8 @@
         });
         return await response.json(); // parses JSON response into native JavaScript objects
     }
-function save() {
+	
+	function save() {
         var objListClear = objectList;
         var linkListClear = linkList;
         objListClear.forEach(function (obj) {
