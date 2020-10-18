@@ -73,7 +73,10 @@
   <option value="NOT">NOT</option> 
   <option value="T_T">T TRIGGER</option>
   <option value="RS_T">RS TRIGGER</option>
+  <option value="CNTR">COUNTER</option>
+  <option value="DELAY">DELAY</option>
 </select>
+<p>&nbsp;<input id="lg_value" type="text" size="9" value="0" disabled></p>
 <p></p>
 </div>
 <p></p>
@@ -108,6 +111,7 @@
 	const CLR_LOG 	= "#ff0080";
 	const CLR_TRG 	= "#c800ff";
 	const CLR_NOT 	= "#ff002b";
+	const CLR_ADD 	= "#fcdb03";
 
 	var canvas = document.getElementById("myCanvas");  
 	canvas.width = window.innerWidth - 200;//screen.availWidth - 200;
@@ -146,6 +150,8 @@
 			case "NOT": 	return CLR_NOT;
 			case "T_T": 	return CLR_TRG;
 			case "RS_T": 	return CLR_TRG;
+			case "CNTR": 	return CLR_ADD;
+			case "DELAY": 	return CLR_ADD;
 			default: 		return CLR_LOG;
 			}
 		default: 			return "#ffffff";
@@ -203,7 +209,7 @@
 		drawBoxDeleteZone(x, y);
 	}
 
-	function drawLogicSingleInp(x, y, color, v, c) {
+	function drawLogicSingleInp(x, y, color, v, c, vt = "") {
 		var canvas = document.getElementById("myCanvas");
 		var ctx = canvas.getContext("2d");
 
@@ -218,7 +224,8 @@
 		ctx.rect(x - 25, y - 35, 50, 70);
 		ctx.font = "12px Arial";
 		ctx.fillStyle = "#ffffff";
-		ctx.fillText(v, x - 15, y + 5);
+		ctx.fillText(v, x - 20, y + 5);
+		ctx.fillText(vt, x - 20, y + 20);
 		ctx.moveTo(x + 25, y); //piska
 		ctx.lineTo(x + 35, y);
 		ctx.moveTo(x - 25, y); //piska
@@ -280,6 +287,16 @@
 			}
 			if(lv === "RS_T") {
 				drawLogic(x, y, CLR_TRG, lv, 0, "R", "S");
+				return;
+			}
+			if(lv === "CNTR") {
+				var v = document.getElementById("lg_value").value;
+				drawLogicSingleInp(x, y, CLR_ADD, lv, 0, v);
+				return;
+			}
+			if(lv === "DELAY") {
+				var v = document.getElementById("lg_value").value + "s";
+				drawLogicSingleInp(x, y, CLR_ADD, lv, 0, v);
 				return;
 			}
 			if(lv === "AND" || lv === "OR" || lv === "XOR") {
@@ -346,7 +363,7 @@
 	function drawLineFromArray() {
 		linkList.forEach(function(line) {
 			if(line.to.type === "LOGIC") {
-				if(line.to.logicType === "NOT" || line.to.logicType === "T_T") {
+				if(line.to.logicType === "NOT" || line.to.logicType === "T_T" || line.to.logicType === "CNTR" || line.to.logicType === "DELAY") {
 					drawLine(line.from.x + 55, line.from.y + 35, line.to.x - 5, line.to.y + 35, objTypeToColor(line.from), objTypeToColor(line.to));
 					return;
 				}
@@ -472,7 +489,7 @@
 		objectList.forEach(function(obj) {
 			if(obj.type === "LOGIC") {
 				if(isCoordOnOut(x, y, obj)) {
-					if(obj.logicType === "NOT" || obj.logicType === "T_T") {
+					if(obj.logicType === "NOT" || obj.logicType === "T_T" || obj.logicType === "CNTR" || obj.logicType === "DELAY") {
 						drawLine(tempF.x + 55, tempF.y + 35, obj.x - 5, obj.y + 35, objTypeToColor(tempF), objTypeToColor(obj));
 						pushLink(obj, tempF, 0);
 						clickCounter = 0;
@@ -605,6 +622,7 @@
 				radBox[i].disabled = true;
 			}
 			document.getElementById('lg').disabled = true;
+			document.getElementById('lg_value').disabled = true;
 		}
 	}, false);
 
@@ -619,6 +637,7 @@
 	radBox[0].addEventListener('change', function(event) {
 		if(radBox[0].checked) {
 			document.getElementById('lg').disabled = true;
+			document.getElementById('lg_value').disabled = true;
 			document.getElementById('input').disabled = false;
 			document.getElementById('txt').disabled = false;
 		}
@@ -627,6 +646,7 @@
 	radBox[1].addEventListener('change', function(event) {
 		if(radBox[1].checked) {
 			document.getElementById('lg').disabled = false;
+			document.getElementById('lg_value').disabled = false;
 			document.getElementById('input').disabled = true;
 			document.getElementById('txt').disabled = true;
 		}
@@ -635,6 +655,7 @@
 	radBox[2].addEventListener('change', function(event) {
 		if(radBox[2].checked) {
 			document.getElementById('lg').disabled = true;
+			document.getElementById('lg_value').disabled = true;
 			document.getElementById('input').disabled = true;
 			document.getElementById('txt').disabled = true;
 		}
