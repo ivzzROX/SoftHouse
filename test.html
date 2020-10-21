@@ -113,6 +113,8 @@
 	const CLR_NOT = "#ff002b";
 	const CLR_ADD = "#fcdb03";
 
+	const DEBUG = 1;
+
 	var canvas = document.getElementById("myCanvas");  
 	canvas.width =  window.innerWidth - 200;
 	canvas.height = window.innerHeight - 20;
@@ -124,11 +126,17 @@
 	
 	var objectList = [];
 	var linkList = [];
+	var dbgRectList = [];
 	
 	var clickCounter = 0;
 	var objCounter = 0;
 	var linkCounter = 0;
 	var tempF;
+	
+	var obj = new Object(); //hueta
+	obj.x = 10000; obj.y = 10000;
+	var highlightOutput = new Object();
+	highlightOutput.obj = obj; highlightOutput.cl = 0;
 	
 	function removeA(arr) { // SPIZENO S SO
 		var what, a = arguments, L = a.length, ax;
@@ -158,13 +166,35 @@
 		}
 	}
 	
-	function drawDebugRect(fx, fy, sx, sy, cl) {
+	function drawDebugRect(dbgRect) {
 		var canvas = document.getElementById("myCanvas");
 		var ctx = canvas.getContext("2d");
 		ctx.globalAlpha = 0.2;
-		ctx.fillRect(fx, fy, sx - fx, sy - fy);
-		ctx.fillStyle = cl;
+		ctx.fillStyle = dbgRect.cl;
+		ctx.fillRect(dbgRect.fx, dbgRect.fy, dbgRect.sx, dbgRect.sy);
 		ctx.globalAlpha = 1;
+	}
+	
+	function drawDebugRectFromArray() {
+		dbgRectList.forEach(function(dbgRect) {
+			drawDebugRect(dbgRect);
+		});
+	}
+	
+	function pushDebugRect(fx, fy, sx, sy, cl) {
+		var dbgRect = new Object();
+		dbgRect.fx = fx;
+		dbgRect.fy = fy;
+		dbgRect.sx = sx - fx;
+		dbgRect.sy = sy - fy;
+		dbgRect.cl = cl;
+		dbgRectList.push(dbgRect);
+	}
+	
+	function debugRectClearArray() {
+		while(dbgRectList.length > 0) {
+			dbgRectList.pop();
+		}
 	}
 	
 	function drawBoxDeleteZone(x, y, bc = "#ffffff") {
@@ -193,7 +223,7 @@
 		ctx.font = "12px Arial";
 		ctx.fillStyle = "#ffffff";
 		ctx.fillText("OUT " + outNumber, x - 15, y);
-		ctx.moveTo(x - 25, y); //piska
+		ctx.moveTo(x - 25, y);
 		ctx.lineTo(x - 35, y);
 		ctx.stroke();
 
@@ -211,11 +241,33 @@
 		ctx.font = "12px Arial";
 		ctx.fillStyle = "#ffffff";
 		ctx.fillText(t, x - 15, y);
-		ctx.moveTo(x + 25, y); //piska
+		ctx.moveTo(x + 25, y);
 		ctx.lineTo(x + 35, y);
 		ctx.stroke();
 
 		drawBoxDeleteZone(x, y, CLR_IN);
+	}
+
+	function drawHighlightOutput() {
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		
+		ctx.beginPath();
+		ctx.lineWidth = "3";
+		ctx.strokeStyle = highlightOutput.cl;
+		ctx.moveTo(highlightOutput.obj.x + 50, highlightOutput.obj.y + 35);
+		ctx.lineTo(highlightOutput.obj.x + 60, highlightOutput.obj.y + 35);
+		ctx.stroke();
+	}
+	
+	function setHighlightOutput(obj, cl) {
+		highlightOutput.obj = obj;
+		highlightOutput.cl = cl;
+	}
+	
+	function clearHighlightOutput() {
+		highlightOutput.obj = 0;
+		highlightOutput.cl = 0;
 	}
 
 	function drawLogicSingleInp(x, y, color, v, c, vt = "") {
@@ -250,7 +302,7 @@
 
 		ctx.beginPath();
 		ctx.lineWidth = "2";
-		ctx.strokeStyle = color;;
+		ctx.strokeStyle = color;
 		if(c) {
 			ctx.fillStyle = color;
 			ctx.arc(x + 25, y, 5, 0, 2 * Math.PI);
@@ -391,6 +443,12 @@
 		canvasClear();
 		drawLogicFromArray();
 		drawLineFromArray();
+		drawHighlightOutput();
+		
+		if(DEBUG) {
+			drawDebugRectFromArray();
+			debugRectClearArray();
+		}
 	}
 
 	function pushLink(to, from, up) {
@@ -404,6 +462,7 @@
 	}
 
 	function isCoordOnElement(x, y, obj) {
+		pushDebugRect(obj.x - 40, obj.y - 40, obj.x + 90, obj.y + 110, "#ffffff");
 		if( x > obj.x - 40 && x < obj.x + 90 &&
 			y > obj.y - 40 && y < obj.y + 110)
 		{
@@ -422,8 +481,9 @@
 	}
 
 	function isCoordOnLogicInputUp(x, y, obj) {
-		if( x > obj.x - 40 && x < obj.x + 20 &&
-			y > obj.y - 20 && y < obj.y + 30)
+		pushDebugRect(obj.x - 20, obj.y, obj.x + 10, obj.y + 30, "#0000ff");
+		if( x > obj.x - 20 && x < obj.x + 10 &&
+			y > obj.y && y < obj.y + 30)
 		{
 			return 1;
 		}
@@ -431,8 +491,9 @@
 	}
 
 	function isCoordOnLogicInputDown(x, y, obj) {
-		if( x > obj.x - 40 && x < obj.x + 20 &&
-			y > obj.y + 40 && y < obj.y + 90)
+		pushDebugRect(obj.x - 20, obj.y + 40, obj.x + 10, obj.y + 70, "#0000ff");
+		if( x > obj.x - 20 && x < obj.x + 10 &&
+			y > obj.y + 40 && y < obj.y + 70)
 		{
 			return 1;
 		}
@@ -440,8 +501,19 @@
 	}
 
 	function isCoordOnOut(x, y, obj) {
-		if( x > obj.x - 40 && x < obj.x + 20 &&
-			y > obj.y - 15 && y < obj.y + 55)
+		pushDebugRect(obj.x - 20, obj.y + 20, obj.x + 10, obj.y + 50, "#0000ff");
+		if( x > obj.x - 20 && x < obj.x + 10 &&
+			y > obj.y + 20 && y < obj.y + 50)
+		{
+			return 1;
+		}
+		return 0;
+	}
+
+	function isCoordOnElementOutput(x, y, obj) {
+		pushDebugRect(obj.x + 40, obj.y + 20, obj.x + 75, obj.y + 50, "#0000ff");
+		if( x > obj.x + 40 && x < obj.x + 75 &&
+			y > obj.y + 20 && y < obj.y + 50)
 		{
 			return 1;
 		}
@@ -457,6 +529,8 @@
 		if(link.up === 2) {
 			yLinkCenter -= 10;
 		}
+		pushDebugRect(xLinkCenter - 15, yLinkCenter - 15,
+			  xLinkCenter + 15, yLinkCenter + 15, "#ff0000");
 		if( x > xLinkCenter - 15 && x < xLinkCenter + 15 &&
 			y > yLinkCenter - 15 && y < yLinkCenter + 15) {
 			return 1;
@@ -474,6 +548,9 @@
 		rmList.forEach(function(rm) {
 			removeA(linkList, rm);
 		});
+		if(highlightOutput.obj === obj) {
+			clearHighlightOutput();
+		}
 		removeA(objectList, obj);
 	}
 
@@ -491,10 +568,9 @@
 
 	function setFirstLinkPoint(x, y) {
 		objectList.forEach(function(obj) {
-			if( x > obj.x + 35 && x < obj.x + 75 &&
-				y > obj.y - 15 && y < obj.y + 55)
-			{
+			if(isCoordOnElementOutput(x, y, obj)) {
 				tempF = obj;
+				setHighlightOutput(tempF, "#00ff00");
 				clickCounter = 1;
 			}
 		});
@@ -508,6 +584,7 @@
 					|| obj.logicType === "CNTR" || obj.logicType === "DELAY") {
 						if(isCoordOnOut(x, y, obj)) {
 							pushLink(obj, tempF, 2);
+							clearHighlightOutput();
 							clickCounter = 0;
 						}
 						return;
@@ -515,19 +592,27 @@
 					if(isCoordOnLogicInputUp(x, y, obj)) {
 						pushLink(obj, tempF, 1);
 						clickCounter = 0;
+						clearHighlightOutput();
 						return;
 					}
 					if(isCoordOnLogicInputDown(x, y, obj)) {
 						pushLink(obj, tempF, 0);
 						clickCounter = 0;
+						clearHighlightOutput();
 						return;
 					}
 				}
 				if(obj.type === "OUTPUT") {
 					if(isCoordOnOut(x, y, obj)) {
 						pushLink(obj, tempF, 2);
+						clearHighlightOutput();
 						clickCounter = 0;
 					}
+				}
+				if(isCoordOnElementOutput(x, y, obj)) { //presed on another out
+					tempF = obj;
+					setHighlightOutput(tempF, "#00ff00");
+					clickCounter = 1;
 				}
 			}
 		});
@@ -541,21 +626,8 @@
 		var	y = event.clientY - canvas.offsetTop;
 		var addNewObj = 1;
 
-		if(radAction[0].checked) //DRAW LINK
-		{
-			if(clickCounter === 1) //DRAW LINE ON SECOND CLICK
-			{
-				setSecondLinkPoint(x, y);
-				canvasRedrawFromList();
-				return;
-			}
-
-			if(clickCounter === 0) //SET FIRST POINT ON FIRST CLICK
-			{
-				setFirstLinkPoint(x, y);
-			}
-		}
-
+		canvasRedrawFromList();
+		
 		objectList.forEach(function(obj) { // DELETE ELEMENT
 			if(isCoordElementDeleteZone(x, y, obj)) {
 				deleteElement(obj);
@@ -573,6 +645,22 @@
 				return;
 			}
 		});
+
+		if(radAction[0].checked) //DRAW LINK
+		{
+			if(clickCounter === 1) //DRAW LINE ON SECOND CLICK
+			{
+				setSecondLinkPoint(x, y);
+				canvasRedrawFromList();
+				return;
+			}
+
+			if(clickCounter === 0) //SET FIRST POINT ON FIRST CLICK
+			{
+				setFirstLinkPoint(x, y);
+				canvasRedrawFromList();
+			}
+		}
 
 		if(radAction[1].checked) //DRAW ELEMENTS
 		{
