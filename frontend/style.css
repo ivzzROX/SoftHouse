@@ -1,0 +1,20 @@
+body {
+	background-color: #424242;
+}
+
+.canvas_layer {
+	position: fixed;
+	float: left;
+}
+
+.menu {
+	position: fixed;
+	right: 5px;
+	width: 180px;
+}
+
+.border {
+	border-style: inset;
+	border-width: 2px;
+	background-color: #b5b5b5;
+}
