@@ -4,6 +4,7 @@ const CLR_LOG = 	"#ff0080";
 const CLR_TRG = 	"#c800ff";
 const CLR_NOT = 	"#ff002b";
 const CLR_ADD =		"#fcdb03";
+const CLR_NDF =		"#ffffff";
 const CLR_CNVS =	"#424242";
 
 var objectList = [];
@@ -12,36 +13,43 @@ var linkList = [];
 var clickCounter = 0;
 var objCounter = 0;
 var linkCounter = 0;
+
+var mouseDown = 0;
+var previousX = 0;
+var previousY = 0;
+var draw = 1;
+
 var tempFirstBlock;
 
 var canvas = document.getElementById("myCanvas");  
-canvas.width = window.innerWidth - 200;
+canvas.width  = window.innerWidth - 200;
 canvas.height = window.innerHeight - 20;
 
 window.onresize = function() {
-    canvas.width =  window.innerWidth - 200;
+	canvas.width =  window.innerWidth - 200;
 	canvas.height = window.innerHeight - 20;
 	canvasRedrawFromList();
 };
 
 const LOGIC = {
+	NULL 	: {type: " ",    	color: CLR_NDF, input_n: 0, circle: 0},
 	AND 	: {type: "AND", 	color: CLR_LOG, input_n: 2, circle: 0}, 
-	OR		: {type: "OR",		color: CLR_LOG, input_n: 2, circle: 0},
-	XOR		: {type: "XOR", 	color: CLR_LOG, input_n: 2, circle: 0},
+	OR  	: {type: "OR",  	color: CLR_LOG, input_n: 2, circle: 0},
+	XOR  	: {type: "XOR", 	color: CLR_LOG, input_n: 2, circle: 0},
 	NAND	: {type: "NAND",	color: CLR_LOG, input_n: 2, circle: 1},
-	NOR		: {type: "NOR",		color: CLR_LOG, input_n: 2, circle: 1},
+	NOR  	: {type: "NOR", 	color: CLR_LOG, input_n: 2, circle: 1},
 	XNOR	: {type: "XNOR",	color: CLR_LOG, input_n: 2, circle: 1},
-	NOT		: {type: "NOT",		color: CLR_NOT, input_n: 1, circle: 1},
-	T_T		: {type: "T T",		color: CLR_TRG, input_n: 1, circle: 0},
+	NOT  	: {type: "NOT", 	color: CLR_NOT, input_n: 1, circle: 1},
+	T_T 	: {type: "T T",		color: CLR_TRG, input_n: 1, circle: 0},
 	RS_T	: {type: "RS T",	color: CLR_TRG, input_n: 2, circle: 0},
 	CNTR	: {type: "CNTR",	color: CLR_ADD, input_n: 1, circle: 0},
-	DLY		: {type: "DELAY",	color: CLR_ADD, input_n: 1, circle: 0}
+	DLY 	: {type: "DELAY",	color: CLR_ADD, input_n: 1, circle: 0}
 };
 
 function logicNameToStruct(name) {
 	switch(name) {
 	case "AND": 		return LOGIC.AND;
-	case "OR": 			return LOGIC.OR;
+	case "OR":  		return LOGIC.OR;
 	case "XOR": 		return LOGIC.XOR;
 	case "NAND": 		return LOGIC.NAND;
 	case "NOR": 		return LOGIC.NOR;
@@ -51,7 +59,7 @@ function logicNameToStruct(name) {
 	case "RS_T": 		return LOGIC.RS_T;
 	case "CNTR": 		return LOGIC.CNTR;
 	case "DELAY": 		return LOGIC.DLY;
-	default: 			return 0;
+	default:    		return LOGIC.NULL;
 	}
 }
 
@@ -178,7 +186,7 @@ class InputBlock extends Block {
 		this.number = number;
 		this.id = id;
 		this.type = "INPUT";
-		}
+	}
 
 	draw() {
 		super.draw();
@@ -266,13 +274,13 @@ class Line {
 		var bfy = this.blockFrom.y;
 		var btx = this.blockTo.x - 30;
 		var bty = this.blockTo.y;
-		if(this.position == 1){ // up
+		if(this.position == 1) { // up
 			bty -= 20; 
 		}
-		if(this.position == 2){ // middle
+		if(this.position == 2) { // middle
 			// y
 		}
-		if(this.position == 3){ // down
+		if(this.position == 3) { // down
 			bty += 20; 
 		}
 		var gradient = this.ctx.createLinearGradient(bfx, bfy, btx, bty);
@@ -402,13 +410,50 @@ function setSecondLinkPoint(x, y, ctx) {
 	return result;
 }
 
+document.body.onmousedown = function() { 
+	mouseDown = 1;
+}
+
+document.body.onmouseup = function() {
+	mouseDown = 0;
+}
+
+canvas.addEventListener('mousemove', function(event) {
+	draw = 1;
+	var dragAll = 1;
+	if(mouseDown) {
+		draw = 0;
+		var diffX = event.clientX - 8 - previousX;
+		var diffY = event.clientY - 8 - previousY;
+
+		objectList.forEach(function(obj) { // drag element
+			if(obj.isCoordOnElement(event.clientX - 8, event.clientY - 8)) {
+				obj.x += diffX;
+				obj.y += diffY;
+				dragAll = 0;
+			}
+		});
+
+		if(dragAll === 1) { // drag all lements
+			objectList.forEach(function(obj) {
+				obj.x += diffX;
+				obj.y += diffY;
+			});
+		}
+		
+		canvasRedrawFromList();
+	}
+	previousX = event.clientX - 8;
+	previousY = event.clientY - 8;
+}, false);
+
 canvas.addEventListener('click', function(event) {
 	var canvas = document.getElementById("myCanvas");
 	var ctx = canvas.getContext("2d");
 	var x = event.clientX - 8;
 	var	y = event.clientY - 8;
-	var draw = 1;
-
+	
+	
 	objectList.forEach(function(obj) {
 		if(obj.isCoordOnDeleteZone(x, y)) {
 			deleteElement(obj);
@@ -435,12 +480,11 @@ canvas.addEventListener('click', function(event) {
 	}
 	
 	objectList.forEach(function(obj) {
-		if(obj.isCoordOnElement(x, y)) {
+		if(obj.isCoordOnElement(x, y)) { // collision
 			draw = 0;
-			return;
 		}
 	});
-	if (draw) {
+	if (draw === 1) {
 		var radBox = document.getElementsByName('box');
 		if(radBox[0].checked){ // draw input
 			var txt = document.getElementById("txt").value;
@@ -468,7 +512,7 @@ canvas.addEventListener('click', function(event) {
 			canvasRedrawFromList();
 		}
 		if(radBox[2].checked) { // draw output
-			var txt = "";
+			var txt = document.getElementById("out").value;
 			var output = new OutputBlock(x, y, ctx, txt, objCounter);
 			objCounter++;
 			objectList.push(output);
