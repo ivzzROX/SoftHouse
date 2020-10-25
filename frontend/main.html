@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<div class="canvas_layer">
+		<canvas id="myCanvas" width="1" height="1" style="border:1px solid #d3d3d3;"> </canvas>
+	</div>
+	
+	<div id="menu" class="menu">
+		<div class="border"><p></p>
+		&nbsp;OUTPUT&nbsp;
+		<select id="out">
+			<option value="1" selected>1</option> 
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+			<option value="10">10</option>
+			<option value="11">11</option>
+			<option value="12">12</option>
+			<option value="13">13</option>
+			<option value="14">14</option>
+			<option value="15">15</option>
+			<option value="16">16</option>
+		</select><p></p>
+		</div><p></p>
+		
+		<div class="border">
+		<p>&nbsp;ELEMENT</p>
+		<p><input name="box" type="radio" value="INPUT" checked>INPUT</p>
+		<p><input name="box" type="radio" value="LOGIC">LOGIC</p>
+		<p><input name="box" type="radio" value="OUTPUT">OUTPUT</p>
+		</div><p></p>
+		
+		<div class="border">
+		<p>&nbsp;LOGIC</p>&nbsp;
+		<select name="logic" id="lg">
+			<option value="AND" selected>AND</option> 
+			<option value="OR">OR</option>
+			<option value="XOR">XOR</option>
+			<option value="NAND">NAND</option>
+			<option value="NOR">NOR</option>
+			<option value="XNOR">XNOR</option>
+			<option value="NOT">NOT</option> 
+			<option value="T_T">T TRIGGER</option>
+			<option value="RS_T">RS TRIGGER</option>
+			<option value="CNTR">COUNTER</option>
+			<option value="DELAY">DELAY</option>
+		</select>
+		<p>&nbsp;<input id="lg_value" type="text" size="9" value="0"></p><p></p>
+		</div><p></p>
+		
+		<div class="border">
+		<p>&nbsp;INPUT</p>&nbsp;
+		<select name="input" id="input">
+			<option value="SENSOR" selected>SENSOR</option>
+			<option value="TIME">CONST</option>
+			<option value="TIME">TIME</option> 
+			<option value="DAY OF WEEK">DAY OF WEEK</option> 
+			<option value="PMO">PMO</option> 
+			<option value="INO">INO</option> 
+			<option value="WEB">WEB</option>
+		</select>
+		<p>&nbsp;<input id="txt" type="text" size="9"></p>
+		<p>&nbsp;<input id="tm" type="time" disabled></p>
+		</div><p></p>
+		
+		<div class="border">
+			<p>
+				<input type="button" value="SAVE" onclick="save()">
+				<input type="button" value="LOAD" onclick="">
+				<input type="button" value="CLEAN" onclick="clean()">
+			</p>
+		</div><p></p>
+	</div>
+	
+	<script src="scripts.js"></script>
+	
+</body>
+
+</html>
