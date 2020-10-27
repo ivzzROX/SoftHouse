@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='style.css')}}">
+	<link rel="icon" type="image/ico" href="{{ url_for('static',filename='favicon.ico')}}">
+	<meta charset="utf-8">
+	<title>DRAW PAGE</title>
+</head>
+
+<body>
+
+	<canvas class="canvas_layer" id="myCanvas" width="1" height="1"></canvas>
+	
+	<div id="menu" class="menu">
+	
+		<div class="border">
+			<b>OUTPUT</b>
+			<select class="decwidth" id="out">
+			<option value="1" selected>1</option> 
+			</select>
+		</div>
+		
+		<div class="border">
+			<b>ELEMENT</b>
+			<br><input name="box" type="radio" value="INPUT" checked>INPUT
+			<br><input name="box" type="radio" value="LOGIC">LOGIC
+			<br><input name="box" type="radio" value="OUTPUT">OUTPUT
+		</div>
+		
+		<div class="border">
+			<b>INPUT</b>
+			<select name="input" id="input">
+				<option value="SENSOR" selected>SENSOR</option>
+				<option value="TIME">CONST</option>
+				<option value="TIME">TIME</option> 
+				<option value="DAY OF WEEK">DAY OF WEEK</option> 
+				<option value="PMO">PMO</option> 
+				<option value="INO">INO</option> 
+				<option value="WEB">WEB</option>
+			</select>
+			<br><input id="txt" type="text" value="0"> Address 
+			<br><input id="trv" type="number" value="0"> Value 
+		</div>
+		
+		<div class="border">
+			<b>LOGIC</b>
+			<select name="logic" id="lg"></select>
+			<input id="lg_value" type="number" value="1" min="1">Value 
+		</div>
+		
+		<div class="border">
+			<button class="button button_blue" onclick="save()">SAVE</button>
+			<button class="button button_red" onclick="clean()">CLEAN</button>
+			<button class="button button_green" onclick="">LOAD</button>
+		</div>
+	</div>
+	
+	<script src="scripts.js"></script>
+</body>
+</html>

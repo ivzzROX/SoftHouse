@@ -1,0 +1,78 @@
+body {
+	background-color: #424242;
+}
+
+input[type=text], input[type=time], input[type=number] {
+	width: 50%;
+	padding: 2px;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-sizing: border-box;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+select {
+	width: 100%;
+	padding: 2px;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-sizing: border-box;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.decwidth {
+	width: 30%;
+}
+
+.button {
+	width: 100%;
+	background-color: #424242;
+	border: none;
+	border-radius: 5px;
+	color: #ffffff;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	padding-top: 2px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.button_red {
+	background-color: #870044;
+}
+
+.button_blue {
+	background-color: #004b4f;
+}
+
+.button_green {
+	background-color: #004528;
+}
+
+.canvas_layer {
+	position: fixed;
+	float: left;
+	border: 2px solid #ffffff;
+	border-radius: 5px;
+	background-color: #424242;
+}
+
+.menu {
+	position: absolute;
+	right: 10px;
+	width: 170px;
+}
+
+.border {
+	padding: 2px;
+	border: 2px solid #ffffff;
+	background-color: #9c9c9c;
+	border-radius: 5px;
+	margin-bottom: 10px;
+}

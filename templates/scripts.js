@@ -7,6 +7,25 @@ const CLR_ADD =		"#fcdb03";
 const CLR_NDF =		"#ffffff";
 const CLR_CNVS =	"#424242";
 
+const LOGIC = {
+	NULL 	: {userName: " ",       	type: " ",    	color: CLR_NDF, input_n: 0, circle: 0},
+	AND 	: {userName: "AND",     	type: "AND", 	color: CLR_LOG, input_n: 2, circle: 0}, 
+	OR  	: {userName: "OR",      	type: "OR",  	color: CLR_LOG, input_n: 2, circle: 0},
+	XOR  	: {userName: "XOR",     	type: "XOR", 	color: CLR_LOG, input_n: 2, circle: 0},
+	NAND	: {userName: "NAND",    	type: "NAND",	color: CLR_LOG, input_n: 2, circle: 1},
+	NOR  	: {userName: "NOR",     	type: "NOR", 	color: CLR_LOG, input_n: 2, circle: 1},
+	XNOR	: {userName: "XNOR",    	type: "XNOR",	color: CLR_LOG, input_n: 2, circle: 1},
+	NOT  	: {userName: "NOT",     	type: "NOT", 	color: CLR_NOT, input_n: 1, circle: 1},
+	T_T 	: {userName: "T TRIGGER", 	type: "T T",	color: CLR_TRG, input_n: 1, circle: 0},
+	RS_T	: {userName: "RS TRIGGER",	type: "RS T",	color: CLR_TRG, input_n: 2, circle: 0},
+	CNTR	: {userName: "COUNTER", 	type: "CNTR",	color: CLR_ADD, input_n: 1, circle: 0},
+	DLY 	: {userName: "DELAY",   	type: "DELAY",	color: CLR_ADD, input_n: 1, circle: 0}
+};
+
+const LOGIC_INCLUDE_VALUE = [LOGIC.CNTR, LOGIC.DLY];
+const LOGIC_BLOCK = ['lg', 'lg_value'];
+const INPUT_BLOCK = ['input', 'txt', 'trv'];
+
 var objectList = [];
 var linkList = [];
 
@@ -24,6 +43,8 @@ var tempFirstBlock;
 var canvas = document.getElementById("myCanvas");  
 canvas.width  = window.innerWidth - 200;
 canvas.height = window.innerHeight - 20;
+setAttributeDisabled(LOGIC_BLOCK, true);
+setAttributeDisabled(INPUT_BLOCK, false);
 
 window.onresize = function() {
 	canvas.width =  window.innerWidth - 200;
@@ -31,36 +52,38 @@ window.onresize = function() {
 	canvasRedrawFromList();
 };
 
-const LOGIC = {
-	NULL 	: {type: " ",    	color: CLR_NDF, input_n: 0, circle: 0},
-	AND 	: {type: "AND", 	color: CLR_LOG, input_n: 2, circle: 0}, 
-	OR  	: {type: "OR",  	color: CLR_LOG, input_n: 2, circle: 0},
-	XOR  	: {type: "XOR", 	color: CLR_LOG, input_n: 2, circle: 0},
-	NAND	: {type: "NAND",	color: CLR_LOG, input_n: 2, circle: 1},
-	NOR  	: {type: "NOR", 	color: CLR_LOG, input_n: 2, circle: 1},
-	XNOR	: {type: "XNOR",	color: CLR_LOG, input_n: 2, circle: 1},
-	NOT  	: {type: "NOT", 	color: CLR_NOT, input_n: 1, circle: 1},
-	T_T 	: {type: "T T",		color: CLR_TRG, input_n: 1, circle: 0},
-	RS_T	: {type: "RS T",	color: CLR_TRG, input_n: 2, circle: 0},
-	CNTR	: {type: "CNTR",	color: CLR_ADD, input_n: 1, circle: 0},
-	DLY 	: {type: "DELAY",	color: CLR_ADD, input_n: 1, circle: 0}
-};
+function setAttributeDisabled(list, value) {
+	list.forEach(function(el) {
+		document.getElementById(el).disabled = value;
+	});
+}
+
+for (var i = 1; i <= 16; i++) {
+    var opt = document.createElement('option');
+	if(i === 1) { opt.selected = true; }
+    opt.value = i;
+    opt.innerHTML = i;
+    document.getElementById("out").appendChild(opt);
+}
+
+Object.keys(LOGIC).forEach(function(key){
+	if(LOGIC[key].userName !== " ") {
+		var opt = document.createElement('option');
+		if(LOGIC[key].type === "AND") { opt.selected = true; }
+		opt.value = LOGIC[key].type;
+		opt.innerHTML = LOGIC[key].userName;
+		document.getElementById("lg").appendChild(opt);
+	}
+});
 
 function logicNameToStruct(name) {
-	switch(name) {
-	case "AND": 		return LOGIC.AND;
-	case "OR":  		return LOGIC.OR;
-	case "XOR": 		return LOGIC.XOR;
-	case "NAND": 		return LOGIC.NAND;
-	case "NOR": 		return LOGIC.NOR;
-	case "XNOR": 		return LOGIC.XNOR;
-	case "NOT": 		return LOGIC.NOT;
-	case "T_T": 		return LOGIC.T_T;
-	case "RS_T": 		return LOGIC.RS_T;
-	case "CNTR": 		return LOGIC.CNTR;
-	case "DELAY": 		return LOGIC.DLY;
-	default:    		return LOGIC.NULL;
-	}
+	var result;
+	Object.keys(LOGIC).forEach(function(key){
+		if(LOGIC[key].type === name) {
+			result = LOGIC[key];
+		}	
+	});
+	return result;
 }
 
 class Block {
@@ -181,20 +204,25 @@ class Block {
 
 class InputBlock extends Block {
 
-	constructor(x, y, ctx, number, id) {
+	constructor(x, y, ctx, number, id, type, triggerValue) {
 		super(x, y, CLR_IN, ctx, 0, 1, 0);
 		this.number = number;
 		this.id = id;
 		this.type = "INPUT";
+		this.inType = type;
+		this.triggerValue = triggerValue;
 	}
 
 	draw() {
 		super.draw();
 		this.ctx.beginPath();
-		this.ctx.font = "11px Arial";
+		this.ctx.font = "bold 11px Arial";
 		this.ctx.fillStyle = "#ffffff";
-		this.ctx.fillText("INPUT", this.x - 18, this.y);
-		this.ctx.fillText(this.number, this.x - 15, this.y + 15);
+		this.ctx.fillText("INPUT", this.x - 18, this.y - 13);
+		this.ctx.font = "9px Arial";
+		this.ctx.fillText(this.inType, this.x - 18, this.y);
+		this.ctx.fillText("A " + this.number, this.x - 18, this.y + 13);
+		this.ctx.fillText("V " + this.triggerValue, this.x - 18, this.y + 26);
 		this.ctx.stroke();
 	}
 };
@@ -211,7 +239,7 @@ class OutputBlock extends Block {
 	draw() {
 		super.draw();
 		this.ctx.beginPath();
-		this.ctx.font = "11px Arial";
+		this.ctx.font = "bold 11px Arial";
 		this.ctx.fillStyle = "#ffffff";
 		this.ctx.fillText("OUTPUT", this.x - 22, this.y);
 		this.ctx.fillText(this.number, this.x - 15, this.y + 15);
@@ -246,11 +274,11 @@ class LogicBlock extends Block {
 	draw() {
 		super.draw();
 		this.ctx.beginPath();
-		this.ctx.font = "11px Arial";
+		this.ctx.font = "bold 11px Arial";
 		this.ctx.fillStyle = "#ffffff";
 		this.ctx.fillText(this.logicType, this.x - 15, this.y);
 		if(this.blockValue > -1) {
-			this.ctx.fillText(this.blockValue, this.x - 10, this.y + 15);
+			this.ctx.fillText("V " + this.blockValue, this.x - 15, this.y + 15);
 		}
 		this.ctx.fillText(this.inputName1, this.x - 20, this.y - 20);
 		this.ctx.fillText(this.inputName2, this.x - 20, this.y + 20);
@@ -488,7 +516,10 @@ canvas.addEventListener('click', function(event) {
 		var radBox = document.getElementsByName('box');
 		if(radBox[0].checked){ // draw input
 			var txt = document.getElementById("txt").value;
-			var input = new InputBlock(x, y, ctx, txt, objCounter);
+			var trv = document.getElementById("trv").value;
+			var sel = document.getElementById('input');
+			var inputType = sel.options[sel.selectedIndex].value;
+			var input = new InputBlock(x, y, ctx, txt, objCounter, inputType, trv);
 			objCounter++;
 			objectList.push(input);
 			canvasRedrawFromList();
@@ -501,10 +532,7 @@ canvas.addEventListener('click', function(event) {
 				logic.inName1 = "S";
 				logic.inName2 = "R";
 			}
-			if(logicType === LOGIC.DLY) {
-				logic.value = document.getElementById("lg_value").value + " ";
-			}
-			if(logicType === LOGIC.CNTR) {
+			if(LOGIC_INCLUDE_VALUE.includes(logicType)) {
 				logic.value = document.getElementById("lg_value").value + " ";
 			}
 			objCounter++;
@@ -518,6 +546,53 @@ canvas.addEventListener('click', function(event) {
 			objectList.push(output);
 			canvasRedrawFromList();
 		}
+	}
+}, false);
+
+function isLogicIncludeValue() {
+		var sel = document.getElementById('lg');
+		var logicType = logicNameToStruct(sel.options[sel.selectedIndex].value);
+		if(LOGIC_INCLUDE_VALUE.includes(logicType)){
+			return false;
+		} else {
+			return true;
+		}
+}
+
+document.getElementById('lg').addEventListener('change', function(event) {
+		setAttributeDisabled(["lg_value"], isLogicIncludeValue());
+	}, false);	 
+
+document.getElementById('input').addEventListener('change', function(event) {
+		var sel = document.getElementById('input');
+		var type = sel.options[sel.selectedIndex].value;
+		if(type === "TIME") {
+			document.getElementById('trv').value = "0"
+			document.getElementById('trv').type = "time";
+		} else {
+			document.getElementById('trv').type = "number";
+		}
+	}, false);
+
+document.getElementsByName('box')[0].addEventListener('change', function(event) {
+		if(document.getElementsByName('box')[0].checked){
+			setAttributeDisabled(LOGIC_BLOCK, true);
+			setAttributeDisabled(INPUT_BLOCK, false);
+		}
+	}, false);
+	
+document.getElementsByName('box')[1].addEventListener('change', function(event) {
+	if(document.getElementsByName('box')[1].checked){
+		setAttributeDisabled(["lg"], false);
+		setAttributeDisabled(["lg_value"], isLogicIncludeValue());
+		setAttributeDisabled(INPUT_BLOCK, true);
+	}
+}, false);
+
+document.getElementsByName('box')[2].addEventListener('change', function(event) {
+	if(document.getElementsByName('box')[2].checked){
+		setAttributeDisabled(LOGIC_BLOCK, true);
+		setAttributeDisabled(INPUT_BLOCK, true);
 	}
 }, false);
 

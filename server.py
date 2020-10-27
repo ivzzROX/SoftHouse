@@ -1,4 +1,6 @@
 from flask import Flask
+from flask import send_file
+from flask import render_template
 from flask_restful import Resource, Api
 from flask_cors import CORS
 import config
@@ -19,6 +21,16 @@ api.add_resource(TestInoEndpoint, '/testino')
 api.add_resource(RegisterSensors, '/sensors')
 api.add_resource(RegisterDevice, '/device')
 api.add_resource(GetUserLogic, '/logic')
+
+
+@app.route('/draw_page')
+def draw_page():
+    return render_template("draw_page.html")
+
+
+@app.route('/scripts.js')
+def scripts():
+    return render_template("scripts.js")
 
 
 def start_server():
