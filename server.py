@@ -28,9 +28,19 @@ def draw_page():
     return render_template("draw_page.html")
 
 
-@app.route('/scripts.js')
-def scripts():
-    return render_template("scripts.js")
+@app.route('/login')
+def login():
+    return render_template("login.html")
+
+
+@app.route('/main')
+def main():
+    return render_template("main.html")
+
+
+@app.route('/register')
+def register():
+    return render_template("register.html")
 
 
 def start_server():

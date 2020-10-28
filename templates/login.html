@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='style.css')}}">
+	<link rel="icon" type="image/ico" href="{{ url_for('static',filename='favicon.ico')}}">
+	<meta charset="utf-8">
+	<title>Login</title>
+</head>
+
+<body>
+
+	<div class="border block_login">
+		<div class="header_text">Sign In</div>
+		
+		<div class="fwidth">
+			<br>Username or email address
+			<br><input id="login" type="text" placeholder="User login">
+			<br>Password
+			<br><input id="passwd" type="password" placeholder="Password"> 
+		</div>
+		
+		<button class="button button_lightblue centered_login_button" onclick="loging()">Sign In</button>
+	</div>
+	
+	<div class="border block_login">
+		<div style="text-align: center;">New to us? Create an account.</div>
+		<button class="button button_lightgreen centered_login_button" onclick="register()">Sign Up</button>
+	</div>
+	
+	<script>
+		function loging() {
+			window.location.port = 5002;
+			window.location.href = "/main";
+		}
+	
+		function register() {
+			window.location.port = 5002;
+			window.location.href = "/register";
+		}
+	</script>
+	
+</body>
+</html>

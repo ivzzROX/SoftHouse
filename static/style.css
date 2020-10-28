@@ -1,9 +1,13 @@
-body {
-	background-color: #424242;
+* {
+	font-family: "Consolas";
 }
 
-input[type=text], input[type=time], input[type=number] {
-	width: 50%;
+body {
+	background-color: #3b3a42;
+}
+
+input[type=text], input[type=time], input[type=number], input[type=password] {
+	width: 100%;
 	padding: 2px;
 	display: inline-block;
 	border: 1px solid #ccc;
@@ -28,9 +32,81 @@ select {
 	width: 30%;
 }
 
+.block_login {
+	font-size: 14px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	width: 300px;
+}
+
+.info_header_main {
+	padding-top: 15px;
+	padding-left: 10px;
+}
+
+.info_main {
+	padding-left: 20px;
+	color: red;
+}
+
+.block_main {
+	font-size: 14px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	width: 650px;
+	height: 500px;
+}
+
+.high_middle {
+	width:200px !important;
+	height:420px !important;
+}
+
+.dummy_middle {
+	width:200px !important;
+	height:200px !important;
+	margin-left: 10px;
+}
+
+.dummy_main {
+	float: left;
+}
+
+.header_text {
+	margin-top: 10px !important;
+	text-align: center;
+	font-size: 26px;
+}
+
+.main_text {
+	color: white;
+	margin-top: 10px !important;
+	text-align: left;
+	font-size: 26px;
+}
+
+.fwidth {
+	width: 90%;
+	margin-left: 15px;
+}
+
+.mwidth {
+	height: 26px;
+}
+
+.centered_login_button {
+	height: 26px;
+	margin-left: 30px;
+	margin-top: 10px !important;
+	margin-bottom: 10px !important;
+	width: 80% !important;
+}
+
 .button {
 	width: 100%;
-	background-color: #424242;
+	background-color: #3b3a42;
 	border: none;
 	border-radius: 5px;
 	color: #ffffff;
@@ -47,12 +123,56 @@ select {
 	background-color: #870044;
 }
 
+.button_lightred {
+	background-color: #ff0080;
+	color: #000000;
+}
+
+.button_lightred:active {
+	background-color: #870044;
+	color: #ffffff;
+}
+
+.button_yellow {
+	background-color: #756600;
+}
+
+.button_lightyellow {
+	background-color: #fcdb03;
+	color: #000000;
+}
+
+.button_lightyellow:active {
+	background-color: #756600;
+	color: #ffffff;
+}
+
 .button_blue {
 	background-color: #004b4f;
 }
 
+.button_lightblue {
+	background-color: #00f2ff;
+	color: #000000;
+}
+
+.button_lightblue:active {
+	background-color: #004b4f;
+	color: #ffffff;
+}
+
 .button_green {
 	background-color: #004528;
+}
+
+.button_lightgreen {
+	background-color: #00ff95;
+	color: #000000;
+}
+
+.button_lightgreen:active {
+	background-color: #004528;
+	color: #ffffff;
 }
 
 .canvas_layer {
@@ -60,7 +180,7 @@ select {
 	float: left;
 	border: 2px solid #ffffff;
 	border-radius: 5px;
-	background-color: #424242;
+	background-color: #3b3a42;
 }
 
 .menu {
@@ -70,9 +190,10 @@ select {
 }
 
 .border {
+	color: white;
 	padding: 2px;
 	border: 2px solid #ffffff;
-	background-color: #9c9c9c;
+	background-color: #3b3a42;
 	border-radius: 5px;
 	margin-bottom: 10px;
 }

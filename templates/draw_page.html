@@ -4,7 +4,7 @@
 	<link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='style.css')}}">
 	<link rel="icon" type="image/ico" href="{{ url_for('static',filename='favicon.ico')}}">
 	<meta charset="utf-8">
-	<title>DRAW PAGE</title>
+	<title>Draw page</title>
 </head>
 
 <body>
@@ -31,30 +31,34 @@
 			<b>INPUT</b>
 			<select name="input" id="input">
 				<option value="SENSOR" selected>SENSOR</option>
-				<option value="TIME">CONST</option>
+				<option value="CONST">CONST</option>
 				<option value="TIME">TIME</option> 
 				<option value="DAY OF WEEK">DAY OF WEEK</option> 
 				<option value="PMO">PMO</option> 
 				<option value="INO">INO</option> 
 				<option value="WEB">WEB</option>
 			</select>
-			<br><input id="txt" type="text" value="0"> Address 
-			<br><input id="trv" type="number" value="0"> Value 
+			<br>Address
+			<br><input id="txt" type="text" value="0"> 
+			<br>Value
+			<br><input id="trv" type="number" value="0"> 
 		</div>
 		
 		<div class="border">
 			<b>LOGIC</b>
 			<select name="logic" id="lg"></select>
-			<input id="lg_value" type="number" value="1" min="1">Value 
+			<br>Value
+			<br><input id="lg_value" type="number" value="1" min="1">
 		</div>
 		
 		<div class="border">
-			<button class="button button_blue" onclick="save()">SAVE</button>
-			<button class="button button_red" onclick="clean()">CLEAN</button>
-			<button class="button button_green" onclick="">LOAD</button>
+			<button class="button button_lightblue" onclick="save()">SAVE</button>
+			<button class="button button_lightred" onclick="clean()">CLEAN</button>
+			<button class="button button_lightgreen" onclick="">LOAD</button>
+			<button class="button button_lightyellow" onclick="back()">BACK</button>
 		</div>
 	</div>
 	
-	<script src="scripts.js"></script>
+	<script src="{{ url_for('static',filename='draw_page_scripts.js')}}"></script>
 </body>
 </html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='style.css')}}">
+	<link rel="icon" type="image/ico" href="{{ url_for('static',filename='favicon.ico')}}">
+	<meta charset="utf-8">
+	<title>Registration</title>
+</head>
+
+<body>
+
+	<div class="border block_login">
+		<div class="header_text">Sign Up</div>
+		
+		<div class="fwidth">
+			<br>Username
+			<br><input id="username" type="text" placeholder="Username">
+			<br>Email address
+			<br><input id="email" type="text" placeholder="Email address">
+			<br>Password
+			<br><input id="passwd" type="password" placeholder="Password">
+			<br>Verify password
+			<br><input id="vrfpasswd" type="password" placeholder="Password"> 
+		</div>
+		
+		<button class="button button_lightblue centered_login_button" onclick="register()">Create account</button>
+	</div>
+	
+	<script>
+		function register() {
+			
+		}
+	</script>
+	
+</body>
+</html>
