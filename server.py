@@ -4,7 +4,9 @@ from flask import Flask
 from flask import request, render_template, jsonify, redirect, make_response, session
 from flask_restful import Resource, Api
 from flask_cors import CORS
-from db import create_user, check_user, get_username_by_id, check_user_data_collision
+from email_sender import send_confirm_mail
+from db import create_user, check_user, get_username_by_id, check_user_data_collision, get_mail_by_username, \
+     confirm_user, get_users
 import config
 from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, \
      RegisterSensors, RegisterDevice, GetUserLogic
@@ -29,6 +31,10 @@ def get_session_param(param):
     if param in session:
         return int(session[param])
     return 0
+
+
+def hash_generate(param):
+    return hashlib.md5((param + 'salt0x45').encode()).hexdigest()
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -58,7 +64,23 @@ def register():
             return jsonify({"status": "Login or email already used"})
         else:
             create_user(data['username'], data['email'], data['passwd'])
+            link = 'http://ddesmintyserver.ml:5002/account_confirm?user=' + data['username'] + '&code=' + hash_generate(data['username'] + data['email'])
+            send_confirm_mail([data['email']], link)
             return jsonify({"status": "OK"})
+
+
+@app.route('/account_confirm', methods=['GET'])
+def account_confirm():
+    if request.method == 'GET':
+        user = request.args.get('user')
+        code = request.args.get('code')
+        mail = get_mail_by_username(user)
+        if code == hash_generate(user + mail):
+            confirm_user(user)
+            print('User confirmed')
+            return redirect("localhost:5002/login")
+        else:
+            print('Some mistake')
 
 
 @app.route('/main')
@@ -78,9 +100,15 @@ def draw_page():
         return redirect("localhost:5002/login")
 
 
+@app.route('/confirm_mail')
+def confirm_mail():
+    return render_template("confirm_mail.html")
+
+
 def start_server():
     app.run(host=config.HOST, port=config.HTTP_PORT)
 
 
 if __name__ == '__main__':
+    get_users()
     app.run(host=config.HOST, port=config.HTTP_PORT)

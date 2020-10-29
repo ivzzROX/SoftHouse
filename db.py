@@ -9,6 +9,15 @@ class User(BaseModel):
     username = CharField()
     email = CharField()
     password = CharField()
+    confirmed = BooleanField(default=False)
+
+
+def get_users():
+    for user in User.select():
+        if user.confirmed:
+            print(user.username, "\tconfirmed")
+        else:
+            print(user.username, "\tunconfirmed")
 
 
 def create_user(username, email, password):
@@ -18,18 +27,18 @@ def create_user(username, email, password):
 
 def check_user_data_collision(username, email):
     try:
-        return User.select().where((User.username == username) | (User.email == email))
+        return User.select().where(((User.username == username) | (User.email == email)) & User.confirmed)
     except DoesNotExist:
         return 0
 
 
 def check_user(login, password):
     try:
-        return User.get(User.username == login, User.password == password).user_id
+        return User.get(User.username == login, User.password == password, User.confirmed).user_id
     except DoesNotExist:
         pass
     try:
-        return User.get(User.email == login, User.password == password).user_id
+        return User.get(User.email == login, User.password == password, User.confirmed).user_id
     except DoesNotExist:
         pass
     return -1
@@ -38,6 +47,20 @@ def check_user(login, password):
 def get_username_by_id(user_id):
     try:
         return User.get_by_id(user_id).username
+    except DoesNotExist:
+        return 'error'
+
+
+def get_mail_by_username(username):
+    try:
+        return User.get(User.username == username).email
+    except DoesNotExist:
+        return 'error'
+
+
+def confirm_user(username):
+    try:
+        return User.update(confirmed=True).where(User.username == username).execute()
     except DoesNotExist:
         return 'error'
 
