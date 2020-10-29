@@ -76,59 +76,6 @@ class TestTimeEndpoint(Resource):
         })
 
 
-class TestTelegramEndpoint(Resource):
-    @staticmethod
-    def get():
-        return jsonify({
-            "OUT":
-                {
-                    "brch":
-                        [
-                            "{g01: 445}"
-                        ]
-                }
-        })
-
-
-class TestInoEndpoint(Resource):
-    @staticmethod
-    def get():
-        return jsonify({
-            "OUT":
-                {
-                    "brch":
-                        [
-                            "{i01: 9}"
-                        ]
-                }
-        })
-
-
-class TestPmoEndpoint(Resource):
-    @staticmethod
-    def get():
-        return jsonify({
-            "OUT":
-                {
-                    "brch":
-                        [
-                            "{p01: 9}"
-                        ]
-                }
-        })
-
-
-class TestTelegramDataEndpoint(Resource):
-    @staticmethod
-    def get():
-        return jsonify({
-            "TLGRM":
-                [
-                    "{445: 1}", "{356: 0}"
-                ]
-        })
-
-
 class TimeStamp(Resource):
     @staticmethod
     def get():

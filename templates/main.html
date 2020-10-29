@@ -16,13 +16,13 @@
 				<div class="main_text">Some info</div>
 				
 				<div class="info_header_main">Loggin:</div>
-				<div class="info_main">some_login</div>
+				<div class="info_main">{{ login }}</div>
 				
 				<div class="info_header_main">Device:</div>
-				<div class="info_main">some_sn</div>
+				<div class="info_main">{{ dev_sn }}</div>
 				
 				<div class="info_header_main">Device status:</div>
-				<div class="info_main">active</div>
+				<div class="info_main">{{ dev_status }}</div>
 			</div>
 		</div>
 		
@@ -30,25 +30,25 @@
 			<div class="border dummy_middle">
 				<div class="main_text">Schematic</div>
 				<button class="button button_lightyellow mwidth" onclick="draw()">Draw schematic</button>
-				<button class="button button_lightyellow mwidth" onclick="">Save file</button>
-				<button class="button button_lightyellow mwidth" onclick="">Load file</button>
+				<button class="button button_lightyellow mwidth" onclick="" disabled>Save file</button>
+				<button class="button button_lightyellow mwidth" onclick="" disabled>Load file</button>
 			</div>
 			
 			<div class="border dummy_middle">
 				<div class="main_text">User settings</div>
-				<button class="button button_lightgreen mwidth" onclick="">Settings</button>
+				<button class="button button_lightgreen mwidth" onclick="" disabled>Settings</button>
 			</div>
 		</div>
 	
 		<div class="dummy_main">
 			<div class="border dummy_middle">
 				<div class="main_text">Sensors</div>
-				<button class="button button_lightblue mwidth" onclick="">Update sensors</button>
+				<button class="button button_lightblue mwidth" onclick="" disabled>Update sensors</button>
 			</div>
 				
 			<div class="border dummy_middle">
 				<div class="main_text">Empty</div>
-				<button class="button button_lightred mwidth" onclick="">Empty</button>
+				<button class="button button_lightred mwidth" onclick="" disabled>Empty</button>
 			</div>
 		</div>
 		

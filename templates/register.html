@@ -21,16 +21,13 @@
 			<br><input id="passwd" type="password" placeholder="Password">
 			<br>Verify password
 			<br><input id="vrfpasswd" type="password" placeholder="Password"> 
+			<div style="color: #3b3a42" id="error"></div>
 		</div>
 		
 		<button class="button button_lightblue centered_login_button" onclick="register()">Create account</button>
 	</div>
 	
-	<script>
-		function register() {
-			
-		}
-	</script>
+	<script src="{{ url_for('static',filename='login_registration.js')}}"></script>
 	
 </body>
 </html>

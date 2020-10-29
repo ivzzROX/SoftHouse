@@ -1,46 +1,81 @@
+import os
+import hashlib
 from flask import Flask
-from flask import send_file
-from flask import render_template
+from flask import request, render_template, jsonify, redirect, make_response, session
 from flask_restful import Resource, Api
 from flask_cors import CORS
+from db import create_user, check_user, get_username_by_id, check_user_data_collision
 import config
-from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, TestPmoEndpoint, TestTelegramEndpoint, \
-    TestInoEndpoint, RegisterSensors, RegisterDevice, GetUserLogic
+from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, \
+     RegisterSensors, RegisterDevice, GetUserLogic
 
 server = Flask('my_app')
 app = Flask(__name__)
 cors = CORS(app)
+app.secret_key = os.urandom(24)
+app.config['SESSION_COOKIE_NAME'] = 'cookie'
+app.config['SESSION_COOKIE_HTTPONLY'] = False
 app.config['CORS_HEADERS'] = 'Content-Type'
 api = Api(app)
 api.add_resource(TimeStamp, '/timestamp')
 api.add_resource(TestEndpoint, '/test')
-api.add_resource(TestPmoEndpoint, '/testpmo')
 api.add_resource(TestTimeEndpoint, '/testtime')
-api.add_resource(TestTelegramEndpoint, '/testtlgrm')
-api.add_resource(TestInoEndpoint, '/testino')
 api.add_resource(RegisterSensors, '/sensors')
 api.add_resource(RegisterDevice, '/device')
 api.add_resource(GetUserLogic, '/logic')
 
 
-@app.route('/draw_page')
-def draw_page():
-    return render_template("draw_page.html")
+def get_session_param(param):
+    if param in session:
+        return int(session[param])
+    return 0
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template("login.html")
+    if request.method == 'GET':
+        session['log'] = '0'
+        return render_template("login.html")
+    elif request.method == 'POST':
+        data = request.json
+        user_id = check_user(data['login'], data['passwd'])
+        if user_id > -1:
+            session['log'] = '1'
+            session['user'] = user_id
+            return jsonify({"status": "OK"})
+        else:
+            session['log'] = '0'
+            return jsonify({"status": "ERROR"})
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template("register.html")
+    elif request.method == 'POST':
+        data = request.json
+        if check_user_data_collision(data['username'], data['email']):
+            return jsonify({"status": "Login or email already used"})
+        else:
+            create_user(data['username'], data['email'], data['passwd'])
+            return jsonify({"status": "OK"})
 
 
 @app.route('/main')
 def main():
-    return render_template("main.html")
+    if get_session_param('log'):
+        user_id = get_session_param('user')
+        return render_template("main.html", login=get_username_by_id(user_id), dev_sn="000000", dev_status="not connected")
+    else:
+        return redirect("localhost:5002/login")
 
 
-@app.route('/register')
-def register():
-    return render_template("register.html")
+@app.route('/draw_page')
+def draw_page():
+    if get_session_param('log'):
+        return render_template("draw_page.html")
+    else:
+        return redirect("localhost:5002/login")
 
 
 def start_server():

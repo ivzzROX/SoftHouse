@@ -128,7 +128,7 @@ select {
 	color: #000000;
 }
 
-.button_lightred:active {
+.button_lightred:active, .button_lightred:disabled {
 	background-color: #870044;
 	color: #ffffff;
 }
@@ -142,7 +142,7 @@ select {
 	color: #000000;
 }
 
-.button_lightyellow:active {
+.button_lightyellow:active, .button_lightyellow:disabled { 
 	background-color: #756600;
 	color: #ffffff;
 }
@@ -156,7 +156,7 @@ select {
 	color: #000000;
 }
 
-.button_lightblue:active {
+.button_lightblue:active, .button_lightblue:disabled {
 	background-color: #004b4f;
 	color: #ffffff;
 }
@@ -170,7 +170,7 @@ select {
 	color: #000000;
 }
 
-.button_lightgreen:active {
+.button_lightgreen:active, .button_lightgreen:disabled {
 	background-color: #004528;
 	color: #ffffff;
 }

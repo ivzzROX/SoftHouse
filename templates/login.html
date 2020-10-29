@@ -17,27 +17,18 @@
 			<br><input id="login" type="text" placeholder="User login">
 			<br>Password
 			<br><input id="passwd" type="password" placeholder="Password"> 
+			<div style="color: #3b3a42" id="error">Invalid login or password</div>
 		</div>
 		
-		<button class="button button_lightblue centered_login_button" onclick="loging()">Sign In</button>
+		<button class="button button_lightblue centered_login_button" onclick="login()">Sign In</button>
 	</div>
 	
 	<div class="border block_login">
 		<div style="text-align: center;">New to us? Create an account.</div>
-		<button class="button button_lightgreen centered_login_button" onclick="register()">Sign Up</button>
+		<button class="button button_lightgreen centered_login_button" onclick="go_register()">Sign Up</button>
 	</div>
 	
-	<script>
-		function loging() {
-			window.location.port = 5002;
-			window.location.href = "/main";
-		}
-	
-		function register() {
-			window.location.port = 5002;
-			window.location.href = "/register";
-		}
-	</script>
+	<script src="{{ url_for('static',filename='login_registration.js')}}"></script>
 	
 </body>
 </html>
