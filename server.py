@@ -9,7 +9,7 @@ from db import create_user, check_user, get_username_by_id, check_user_data_coll
      confirm_user, get_users
 import config
 from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, \
-     RegisterSensors, RegisterDevice, GetUserLogic
+     SensorsStatus, RegisterDevice, GetUserLogic
 
 server = Flask('my_app')
 app = Flask(__name__)
@@ -22,7 +22,7 @@ api = Api(app)
 api.add_resource(TimeStamp, '/timestamp')
 api.add_resource(TestEndpoint, '/test')
 api.add_resource(TestTimeEndpoint, '/testtime')
-api.add_resource(RegisterSensors, '/sensors')
+api.add_resource(SensorsStatus, '/sensors')
 api.add_resource(RegisterDevice, '/device')
 api.add_resource(GetUserLogic, '/logic')
 
@@ -64,7 +64,8 @@ def register():
             return jsonify({"status": "Login or email already used"})
         else:
             create_user(data['username'], data['email'], data['passwd'])
-            link = 'http://ddesmintyserver.ml:5002/account_confirm?user=' + data['username'] + '&code=' + hash_generate(data['username'] + data['email'])
+            link = 'http://ddesmintyserver.ml:5002/account_confirm?user=' + data['username'] + '&code=' + \
+                   hash_generate(data['username'] + data['email'])
             send_confirm_mail([data['email']], link)
             return jsonify({"status": "OK"})
 
@@ -83,11 +84,32 @@ def account_confirm():
             print('Some mistake')
 
 
+def device_list_to_htm(dev_list):
+    res = ""
+    for dev in dev_list:
+        res += str(dev)
+    return res
+
+
+def device_status_list_to_htm(dev_list):
+    res = ""
+    for dev in dev_list:
+        # get device status
+        dev_status = "not connected"
+        res += (str(dev) + ":" + dev_status)
+    return res
+
+
 @app.route('/main')
 def main():
     if get_session_param('log'):
         user_id = get_session_param('user')
-        return render_template("main.html", login=get_username_by_id(user_id), dev_sn="000000", dev_status="not connected")
+        # get all user devices
+        device_test_list = [0o000000, 0o00001, 0o000002]
+        return render_template("main.html",
+                               login=get_username_by_id(user_id),
+                               dev_sn=device_list_to_htm(device_test_list),
+                               dev_status=device_status_list_to_htm(device_test_list))
     else:
         return redirect("localhost:5002/login")
 

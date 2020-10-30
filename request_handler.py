@@ -11,7 +11,9 @@
 # constants:
 # sensor with address fffe always equal 0
 # sensor with address ffff always equal 1
+import json
 
+current_sensor = {}
 LOGIC = {"START": 1, "OR": 2, "AND": 3, "XOR": 4, "NOR": 5, "NAND": 6, "XNOR": 7, "NOT": 8}
 
 import time
@@ -102,6 +104,16 @@ class RegisterSensors(Resource):
             if Sensors.select().where(Sensors.serial_number == serial_number).exists():
                 return Response(f'Such serial {serial_number} is already exists', status=400)
             Sensors.create(serial_number=serial_number, type_int=type_int, type_hr=type_hr)
+
+
+class SensorsStatus(Resource):
+    @staticmethod
+    def post():
+        request_sensors = request.json.get('SENSOR')
+        for sensor in request_sensors:
+            current_sensor.update({sensor.get('SN'): sensor.get('TYPE')})
+        print(request_sensors)
+        print(current_sensor)
 
 
 class RegisterDevice(Resource):

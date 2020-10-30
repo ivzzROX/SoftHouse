@@ -140,4 +140,5 @@ dmypy.json
 /.idea/misc.xml
 
 
+*.json
 *.db
