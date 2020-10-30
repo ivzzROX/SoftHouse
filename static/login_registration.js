@@ -82,7 +82,7 @@ function register() {
 				if(data.status === "OK") {
 					document.getElementById("error").style.color = "#3b3a42";
 					window.location.port = 5002;
-					window.location.href = "/login";
+					window.location.href = "/confirm_mail";
 				} else {
 					display_error(data.status);
 				}
