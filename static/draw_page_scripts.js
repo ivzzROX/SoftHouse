@@ -5,7 +5,10 @@ const CLR_TRG = 	"#c800ff";
 const CLR_NOT = 	"#ff002b";
 const CLR_ADD =		"#fcdb03";
 const CLR_NDF =		"#ffffff";
-const CLR_CNVS =	"#424242";
+const CLR_CNVS =	"#3b3a42";
+
+const BLOCK_FONT = 		"bold 14px Consolas";
+const BLOCK_FONT_INFO = "11px Consolas";
 
 const LOGIC = {
 	NULL 	: {userName: " ",       	type: " ",    	color: CLR_NDF, input_n: 0, circle: 0},
@@ -25,6 +28,9 @@ const LOGIC = {
 const LOGIC_INCLUDE_VALUE = [LOGIC.CNTR, LOGIC.DLY];
 const LOGIC_BLOCK = ['lg', 'lg_value'];
 const INPUT_BLOCK = ['input', 'txt', 'trv'];
+
+const MAIN_URL = "/main";
+const PORT = 5002;
 
 var objectList = [];
 var linkList = [];
@@ -216,10 +222,10 @@ class InputBlock extends Block {
 	draw() {
 		super.draw();
 		this.ctx.beginPath();
-		this.ctx.font = "bold 11px Arial";
+		this.ctx.font = BLOCK_FONT;
 		this.ctx.fillStyle = "#ffffff";
 		this.ctx.fillText("INPUT", this.x - 18, this.y - 13);
-		this.ctx.font = "9px Arial";
+		this.ctx.font = BLOCK_FONT_INFO;
 		this.ctx.fillText(this.inType, this.x - 18, this.y);
 		this.ctx.fillText("A " + this.number, this.x - 18, this.y + 13);
 		this.ctx.fillText("V " + this.triggerValue, this.x - 18, this.y + 26);
@@ -239,7 +245,7 @@ class OutputBlock extends Block {
 	draw() {
 		super.draw();
 		this.ctx.beginPath();
-		this.ctx.font = "bold 11px Arial";
+		this.ctx.font = BLOCK_FONT;
 		this.ctx.fillStyle = "#ffffff";
 		this.ctx.fillText("OUTPUT", this.x - 22, this.y);
 		this.ctx.fillText(this.number, this.x - 15, this.y + 15);
@@ -274,14 +280,15 @@ class LogicBlock extends Block {
 	draw() {
 		super.draw();
 		this.ctx.beginPath();
-		this.ctx.font = "bold 11px Arial";
+		this.ctx.font = BLOCK_FONT;
 		this.ctx.fillStyle = "#ffffff";
-		this.ctx.fillText(this.logicType, this.x - 15, this.y);
-		if(this.blockValue > -1) {
-			this.ctx.fillText("V " + this.blockValue, this.x - 15, this.y + 15);
-		}
+		this.ctx.fillText(this.logicType, this.x - 20, this.y);
 		this.ctx.fillText(this.inputName1, this.x - 20, this.y - 20);
 		this.ctx.fillText(this.inputName2, this.x - 20, this.y + 20);
+		if(this.blockValue > -1) {
+			this.ctx.font = BLOCK_FONT_INFO;
+			this.ctx.fillText("V " + this.blockValue, this.x - 15, this.y + 15);
+		}
 		this.ctx.stroke();
 	}
 };
@@ -566,12 +573,12 @@ document.getElementById('lg').addEventListener('change', function(event) {
 document.getElementById('input').addEventListener('change', function(event) {
 		var sel = document.getElementById('input');
 		var type = sel.options[sel.selectedIndex].value;
-		if(type === "TIME") {
-			document.getElementById('trv').value = "0"
-			document.getElementById('trv').type = "time";
-		} else {
-			document.getElementById('trv').type = "number";
-		}
+		//if(type === "TIME") {
+		//	document.getElementById('trv').value = "0"
+		//	document.getElementById('trv').type = "time";
+		//} else {
+		//	document.getElementById('trv').type = "number";
+		//}
 	}, false);
 
 document.getElementsByName('box')[0].addEventListener('change', function(event) {
@@ -639,6 +646,11 @@ function save() {
 	linkList.forEach(function (line) {
 		console.log("link: " + line.id + " from obj: " + line.blockFrom.id + " to obj: " + line.blockTo.id);
 	});
+}
+
+function back() {
+	window.location.port = PORT;
+	window.location.href = MAIN_URL;
 }
 
 function clean() {

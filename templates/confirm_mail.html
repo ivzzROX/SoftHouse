@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='style.css')}}">
+	<link rel="icon" type="image/ico" href="{{ url_for('static',filename='favicon.ico')}}">
+	<meta charset="utf-8">
+	<title>Login</title>
+</head>
+
+<body>
+
+	<div class="border block_login">
+		<div class="header_text">Please confirm your email</div>
+		
+		<div class="fwidth">
+			<br>We sent your a mail with activating link
+		</div>
+		
+		<button class="button button_lightblue centered_login_button" onclick="go_back()">Back</button>
+	</div>
+	
+	<script src="{{ url_for('static',filename='login_registration.js')}}"></script>
+	
+</body>
+</html>

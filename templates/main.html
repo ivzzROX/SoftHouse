@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='style.css')}}">
+	<link rel="icon" type="image/ico" href="{{ url_for('static',filename='favicon.ico')}}">
+	<meta charset="utf-8">
+	<title>SoftHouse</title>
+</head>
+
+<body>
+	<div class="block_main">
+		<div class="main_text">Soft House</div>
+		
+		<div class="dummy_main">
+			<div class="border high_middle">
+				<div class="main_text">Some info</div>
+				
+				<div class="info_header_main">Loggin:</div>
+				<div class="info_main">{{ login }}</div>
+				
+				<div class="info_header_main">Device:</div>
+				<div class="info_main">{{ dev_sn }}</div>
+				
+				<div class="info_header_main">Device status:</div>
+				<div class="info_main">{{ dev_status }}</div>
+			</div>
+		</div>
+		
+		<div class="dummy_main">
+			<div class="border dummy_middle">
+				<div class="main_text">Schematic</div>
+				<button class="button button_lightyellow mwidth" onclick="draw()">Draw schematic</button>
+				<button class="button button_lightyellow mwidth" onclick="" disabled>Save file</button>
+				<button class="button button_lightyellow mwidth" onclick="" disabled>Load file</button>
+			</div>
+			
+			<div class="border dummy_middle">
+				<div class="main_text">User settings</div>
+				<button class="button button_lightgreen mwidth" onclick="" disabled>Settings</button>
+			</div>
+		</div>
+	
+		<div class="dummy_main">
+			<div class="border dummy_middle">
+				<div class="main_text">Sensors</div>
+				<button class="button button_lightblue mwidth" onclick="" disabled>Update sensors</button>
+			</div>
+				
+			<div class="border dummy_middle">
+				<div class="main_text">Empty</div>
+				<button class="button button_lightred mwidth" onclick="" disabled>Empty</button>
+			</div>
+		</div>
+		
+	</div>
+	
+	<script>
+	
+		function draw() {
+			window.location.port = 5002;
+			window.location.href = "/draw_page";
+		}
+		
+	</script>
+	
+</body>
+</html>
