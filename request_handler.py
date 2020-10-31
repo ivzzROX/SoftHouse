@@ -23,6 +23,11 @@ from db import Sensors, Devices
 
 LOGIC = {"START": 1, "OR": 2, "AND": 3, "XOR": 4, "NOR": 5, "NAND": 6, "XNOR": 7, "NOT": 8}
 
+counters = 0  # TODO refactor for several requests at same time
+rs_triggers = 0
+t_triggers = 0
+delays = 0
+
 
 class TestEndpoint(Resource):
     @staticmethod
@@ -32,11 +37,11 @@ class TestEndpoint(Resource):
                 {
                     "brch":
                         [
-                            "{out: 1}", "{s01: 1}", "{c01: s01: 5}", "{f01: c01}"
+                            "{out: 1}", "{s01: 1}", "{c01: s01: 5}"
                         ],
                     "out":
                         [
-                            "{f01: 1}"
+                            "{c01: 1}"
                         ],
                     "s01":
                         [
@@ -132,15 +137,24 @@ def check_if_in_longest_branch(node, current_node=None):
         return check_if_in_longest_branch(node, current_node.link_to)
 
 
-def form_branch(node, branches, current_branch_id, start_node_for_longest_branch=None, counters=None, rs_triggers=None,
-                t_triggers=None, delays=None):
+def form_branch(node, branches, current_branch_id, start_node_for_longest_branch=None):
+    global counters
     if node.node_type == 'OUTPUT':
         branches.update({0: []})
         return form_branch(node.link_from1, branches, current_branch_id=0,  # create initial branch
                            start_node_for_longest_branch=start_node_for_longest_branch)
     if node.logic_type == 'CNTR':
-        branches.get(0).insert(
-            f'{{c{node.link_from1.data}: 1: {node.link_from1.value}}}')
+        new_branch_id = len(branches.values())
+        branches.update({new_branch_id: []})  # create new branch
+
+        return form_branch(node.link_from1, branches, new_branch_id,
+                           start_node_for_longest_branch=start_node_for_longest_branch)
+
+        # new_branch_id = len(branches.values())
+        # branches.update({new_branch_id: []})
+
+        # branches.get(0).append(
+        #     f'{{c{counters if counters < 9 else "0" + str(counters)}: s{new_branch_id if new_branch_id < 9 else "0" + str(new_branch_id)}: {node.counter}}}')
 
     if node.link_from1.node_type == 'INPUT' and node.link_from2.node_type == 'INPUT':
         print(node)
@@ -164,10 +178,18 @@ def form_branch(node, branches, current_branch_id, start_node_for_longest_branch
             return form_branch(node.link_from1, branches, current_branch_id,
                                start_node_for_longest_branch=start_node_for_longest_branch)
     if node.link_from1.node_type == 'LOGIC' and node.link_from2.node_type == 'LOGIC':
-        branches.get(current_branch_id).insert(0,
-                                               f'{{s{len(branches.values())}: {LOGIC.get(node.logic_type)}}}')  # add branch item to list
         new_branch_id = len(branches.values())
         branches.update({new_branch_id: []})  # create new branch
+        if node.link_from1.logic_type == 'CNTR' or node.link_from2.logic_type == 'CNTR':
+            branches.get(0).append(
+                f'{{c{counters if counters < 9 else "0" + str(counters)}: {LOGIC.get(node.logic_type)}}}')
+            branches.get(current_branch_id).insert(0,
+                                                   f'{{s{len(branches.values())}: {LOGIC.get(node.logic_type)}}}')  # add branch item to list
+
+            return form_branch(node.link_from1, branches, new_branch_id,
+                               start_node_for_longest_branch=start_node_for_longest_branch)
+        branches.get(current_branch_id).insert(0,
+                                               f'{{s{len(branches.values())}: {LOGIC.get(node.logic_type)}}}')  # add branch item to list
 
         if check_if_in_longest_branch(node.link_from1,
                                       start_node_for_longest_branch):  # if in longest branch create new branch for another node and insert current
@@ -185,6 +207,14 @@ def form_branch(node, branches, current_branch_id, start_node_for_longest_branch
 def get_branches(nodes, start_node_for_longest_branch):
     out = nodes.get('out')
     branches = {}
+    global counters
+    global rs_triggers
+    global t_triggers
+    global delays
+    counters = 0
+    rs_triggers = 0
+    t_triggers = 0
+    delays = 0
     form_branch(out, branches, 0, start_node_for_longest_branch)
     return branches
 
