@@ -85,7 +85,7 @@ def account_confirm():
 
 @app.route('/main')
 def main():
-    if get_session_param('log'):
+    if True: #get_session_param('log'):
         user_id = get_session_param('user')
         return render_template("main.html", login=get_username_by_id(user_id), dev_sn="000000", dev_status="not connected")
     else:
@@ -94,7 +94,7 @@ def main():
 
 @app.route('/draw_page')
 def draw_page():
-    if get_session_param('log'):
+    if True: #get_session_param('log'):
         return render_template("draw_page.html")
     else:
         return redirect("localhost:5002/login")
@@ -110,5 +110,5 @@ def start_server():
 
 
 if __name__ == '__main__':
-    get_users()
+    # get_users()  # TODO handle when user table does not exist
     app.run(host=config.HOST, port=config.HTTP_PORT)

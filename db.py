@@ -21,7 +21,7 @@ def get_users():
 
 
 def create_user(username, email, password):
-    fuck = User.select().count()
+    fuck = User.select().count()  # TODO refactor for auto-increment
     User.create(user_id=fuck, username=username, email=email, password=password)
 
 
@@ -84,5 +84,6 @@ class Devices(BaseModel):
 
 
 if __name__ == '__main__':
+    create_user('test', 'test', )
     if Sensors.select().where(Sensors.serial_number == 'test_field').exists():
         print('zbc')

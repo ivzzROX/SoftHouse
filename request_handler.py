@@ -132,12 +132,18 @@ def check_if_in_longest_branch(node, current_node=None):
         return check_if_in_longest_branch(node, current_node.link_to)
 
 
-def form_branch(node, branches, current_branch_id, start_node_for_longest_branch=None):
+def form_branch(node, branches, current_branch_id, start_node_for_longest_branch=None, counters=None, rs_triggers=None,
+                t_triggers=None, delays=None):
     if node.node_type == 'OUTPUT':
         branches.update({0: []})
         return form_branch(node.link_from1, branches, current_branch_id=0,  # create initial branch
                            start_node_for_longest_branch=start_node_for_longest_branch)
+    if node.logic_type == 'CNTR':
+        branches.get(0).insert(
+            f'{{c{node.link_from1.data}: 1: {node.link_from1.value}}}')
+
     if node.link_from1.node_type == 'INPUT' and node.link_from2.node_type == 'INPUT':
+        print(node)
         branches.get(current_branch_id).insert(0,
                                                # .insert(0,foo) to insert at the begging of the list due to step-by-step
                                                f'{{{node.link_from2.data}: {LOGIC.get(node.logic_type)}: {node.link_from2.value}}}')  # add second item
@@ -159,18 +165,20 @@ def form_branch(node, branches, current_branch_id, start_node_for_longest_branch
                                start_node_for_longest_branch=start_node_for_longest_branch)
     if node.link_from1.node_type == 'LOGIC' and node.link_from2.node_type == 'LOGIC':
         branches.get(current_branch_id).insert(0,
-                                               f'{{s{current_branch_id + 1}: {LOGIC.get(node.logic_type)}}}')  # add branch item to list
-        branches.update({len(branches.values()): []})  # create new branch
+                                               f'{{s{len(branches.values())}: {LOGIC.get(node.logic_type)}}}')  # add branch item to list
+        new_branch_id = len(branches.values())
+        branches.update({new_branch_id: []})  # create new branch
+
         if check_if_in_longest_branch(node.link_from1,
                                       start_node_for_longest_branch):  # if in longest branch create new branch for another node and insert current
             form_branch(node.link_from1, branches, current_branch_id,
                         start_node_for_longest_branch=start_node_for_longest_branch)
-            form_branch(node.link_from2, branches, current_branch_id + 1,
+            form_branch(node.link_from2, branches, new_branch_id,
                         start_node_for_longest_branch=start_node_for_longest_branch)
         else:
             form_branch(node.link_from2, branches, current_branch_id,
                         start_node_for_longest_branch=start_node_for_longest_branch)
-            form_branch(node.link_from1, branches, current_branch_id + 1,
+            form_branch(node.link_from1, branches, new_branch_id,
                         start_node_for_longest_branch=start_node_for_longest_branch)
 
 
@@ -184,17 +192,19 @@ def get_branches(nodes, start_node_for_longest_branch):
 class GetUserLogic(Resource):
     @staticmethod
     def post():
-        # print(request.get_json(force=True))
+        print(request.get_json(force=True))
         objects = request.get_json(force=True).get('objects')
         links = request.get_json(force=True).get('links')
         nodes = []
         nodes_id_dict = {}
         for _object in objects:
-            node = LogicNode(node_id=_object.get('id'), node_type=_object.get('type'),
+            node = LogicNode(node_id=_object.get('id'),
+                             node_type=_object.get('type'),
                              logic_type=_object.get('logicType'),
-                             data=_object.get('t'), value=_object.get('v'))
+                             data=_object.get('number'),
+                             value=_object.get('triggerValue'),
+                             counter=_object.get('blockValue'))
             nodes.append(node)
-
             nodes_id_dict.update({node.node_id: node})
             if node.node_type == 'OUTPUT':
                 nodes_id_dict.update({'out': node})
@@ -202,20 +212,25 @@ class GetUserLogic(Resource):
         del _object
         for node in nodes:
             # if node.node_type == 'LOGIC':
-            print('1')
             for link in links:
-                if node.node_id == link.get('to').get('id'):
+                print(link)
+                if node.node_id == link.get('blockTo').get('id'):
                     if node.node_type == 'OUTPUT':
-                        node.link_from1 = nodes_id_dict.get(link.get('from').get('id'))
+                        node.link_from1 = nodes_id_dict.get(link.get('blockFrom').get('id'))
                         break
-                    node_link = nodes_id_dict.get(link.get('from').get('id'))
+                    node_link = nodes_id_dict.get(link.get('blockFrom').get('id'))
+                    if node.logic_type == 'RS T':
+                        if link.get('position') == 1:
+                            if node.link_from2:
+                                node.link_from2 = node_link.link_from1
+                            node.link_from1 = node_link
                     if not node.link_from1:
                         node.link_from1 = node_link
                     else:
                         node.link_from2 = node_link
 
-                elif node.node_id == link.get('from').get('id'):
-                    node.link_to = nodes_id_dict.get(link.get('to').get('id'))
+                elif node.node_id == link.get('blockFrom').get('id'):
+                    node.link_to = nodes_id_dict.get(link.get('blockTo').get('id'))
         start_node_for_longest_branch = None
         counter = 0
         for node in nodes:
@@ -224,5 +239,5 @@ class GetUserLogic(Resource):
                 if current_counter > counter:
                     counter = current_counter
                     start_node_for_longest_branch = node
-            print(node.print_val() + '\n')
+                print(node.print_val() + '\n')
         print(get_branches(nodes_id_dict, start_node_for_longest_branch))

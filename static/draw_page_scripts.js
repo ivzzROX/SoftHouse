@@ -622,22 +622,22 @@ async function postData(url = '', data = {}) {
 }
 
 function save() {
-	//var objListClear = objectList;
-	//var linkListClear = linkList;
-	//objListClear.forEach(function (obj) {
-	//	delete obj['x'];
-	//	delete obj['y'];
-	//});
+	var objListClear = objectList;
+	var linkListClear = linkList;
+//	objListClear.forEach(function (obj) {
+//		delete obj['x'];
+//		delete obj['y'];
+//	});
 
-	//linkListClear.forEach(function (obj) {
-	//	delete obj['to']['x'];
-	//	delete obj['from']['y'];
-	//});
+//	linkListClear.forEach(function (obj) {
+//		delete obj['to']['x'];
+//		delete obj['from']['y'];
+//	});
 
-	//postData('http://127.0.0.1:5002/logic', {'objects': objectList, 'links': linkList})
-	//	.then((data) => {
-	//		console.log(data); // JSON data parsed by `response.json()` call
-	//	});
+	postData('http://127.0.0.1:5002/logic', {'objects': objectList, 'links': linkList})
+		.then((data) => {
+			console.log(data); // JSON data parsed by `response.json()` call
+		});
 		
 	objectList.forEach(function (obj) {
 		console.log("obj: " + obj.id + " type: " + obj.type + " logic: " + obj.logicType);
