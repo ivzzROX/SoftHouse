@@ -27,6 +27,7 @@ api.add_resource(RegisterDevice, '/device')
 api.add_resource(GetUserLogic, '/logic')
 
 
+#TEST PL FROM FORK
 def get_session_param(param):
     if param in session:
         return int(session[param])
