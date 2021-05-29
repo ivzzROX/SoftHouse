@@ -1,4 +1,4 @@
-from peewee import SqliteDatabase, Model
+from peewee import SqliteDatabase, Model, PostgresqlDatabase
 
 HTTP_PORT = 5002
 HOST = '0.0.0.0'

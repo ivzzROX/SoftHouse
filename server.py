@@ -9,7 +9,7 @@ from db import create_user, check_user, get_username_by_id, check_user_data_coll
      confirm_user, get_users
 import config
 from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, \
-     RegisterSensors, RegisterDevice, GetUserLogic
+    RegisterSensors, RegisterDevice, GetUserLogic, OutputsToUpdate, DeviceLogs
 
 server = Flask('my_app')
 app = Flask(__name__)
@@ -20,11 +20,13 @@ app.config['SESSION_COOKIE_HTTPONLY'] = False
 app.config['CORS_HEADERS'] = 'Content-Type'
 api = Api(app)
 api.add_resource(TimeStamp, '/timestamp')
-api.add_resource(TestEndpoint, '/test')
+api.add_resource(TestEndpoint, '/test_1')
 api.add_resource(TestTimeEndpoint, '/testtime')
 api.add_resource(RegisterSensors, '/sensors')
 api.add_resource(RegisterDevice, '/device')
 api.add_resource(GetUserLogic, '/logic')
+api.add_resource(OutputsToUpdate, '/sensor_list')
+api.add_resource(DeviceLogs, '/device_logs')
 
 
 def get_session_param(param):
