@@ -164,6 +164,7 @@ def form_branch(node, branches, current_branch_id, start_node_for_longest_branch
         branches.get(current_branch_id).insert(0,
                                                f'{{{node.link_from1.data}: 1: {node.link_from1.value}}}')  # add start
         return branches
+
     if (node.link_from1.node_type == 'INPUT' and node.link_from2.node_type == 'LOGIC') or (
             node.link_from2.node_type == 'INPUT' and node.link_from1.node_type == 'LOGIC'):  # TODO refactor for smaller if
         # insert into branch input value and go next logic node
@@ -177,6 +178,7 @@ def form_branch(node, branches, current_branch_id, start_node_for_longest_branch
                                                    f'{{{node.link_from2.data}: {LOGIC.get(node.logic_type)}: {node.link_from2.value}}}')
             return form_branch(node.link_from1, branches, current_branch_id,
                                start_node_for_longest_branch=start_node_for_longest_branch)
+
     if node.link_from1.node_type == 'LOGIC' and node.link_from2.node_type == 'LOGIC':
         new_branch_id = len(branches.values())
         branches.update({new_branch_id: []})  # create new branch

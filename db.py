@@ -77,10 +77,11 @@ class Devices(BaseModel):
     hr_name = CharField(null=True)
 
 
-#
-# class Logic(BaseModel):
-#     output_id = IntegerField()
-#     logic = JSONField()
+class Logic(BaseModel):
+    user_id = IntegerField()
+    logic_name = CharField()
+    output_id = IntegerField()
+    logic = JSONField()
 
 
 if __name__ == '__main__':
