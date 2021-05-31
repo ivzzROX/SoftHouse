@@ -12,6 +12,11 @@
 # sensor with address fffe always equal 0
 # sensor with address ffff always equal 1
 
+# push button = 1
+# rs button = 2
+# light = 3
+# temp = 4
+
 
 import time
 from flask import jsonify, request, Response
@@ -22,6 +27,8 @@ from data_providers.LogicNode import LogicNode
 from db import Sensors, Devices
 
 LOGIC = {"START": 1, "OR": 2, "AND": 3, "XOR": 4, "NOR": 5, "NAND": 6, "XNOR": 7, "NOT": 8}
+
+SENSORS = {1: "PUSH_BUTTON", 2: "RS_BUTTON", 3: "LIGHT", 4: "TEMPERATURE"}
 
 counters = 0  # TODO refactor for several requests at same time
 rs_triggers = 0
@@ -35,20 +42,23 @@ class TestEndpoint(Resource):
         return jsonify({
             "OUT":
                 {
-                    "brch":
-                        [
-                            "{out: 1}", "{s01: 1}", "{c01: s01: 5}"
-                        ],
                     "out":
                         [
-                            "{c01: 1}"
-                        ],
-                    "s01":
-                        [
-                            "{000b: 1: 1}"
+                            "{000b: 1: 1}", "{f01: 1: psv}"
                         ]
                 }
         })
+
+        # T trigger with button, in case with psv operration code should be equal to 1
+        # "out":
+        # [
+        #   "{000b: 1: 1}", "{f01: 1: psv}"
+        # ]
+
+        # "out":
+        # [
+        #     "{000B: 1: 1}"  # }", "{s01: 1}", "{c01: s01: 5}"
+        # ],
 
 
 class TestTimeEndpoint(Resource):
@@ -89,6 +99,12 @@ class TimeStamp(Resource):
         return out
 
 
+class OutputsToUpdate(Resource):
+    @staticmethod
+    def get():
+        return "list:1,3,5"
+
+
 class RegisterSensors(Resource):
     @staticmethod
     def post():
@@ -109,11 +125,20 @@ class RegisterSensors(Resource):
                 return Response(f'Such serial {serial_number} is already exists', status=400)
             Sensors.create(serial_number=serial_number, type_int=type_int, type_hr=type_hr)
 
+a = {"DEVICE":{"SN":'001'}}
+
+
+class DeviceLogs(Resource):
+    @staticmethod
+    def post():
+        logs = request.get_json(force=True)
+
+
 
 class RegisterDevice(Resource):
     @staticmethod
     def post():
-        serial_number = request.get_json(force=True).get('DEVICE').get('SN')
+        serial_number = request.get_json(force=True).get('DEVICE')[0].get('SN')
         if serial_number is None:
             return Response('Not valid JSON (SN field is not exist)', status=400)
         if Devices.select().where(Devices.serial_number == serial_number).exists():
