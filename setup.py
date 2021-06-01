@@ -7,7 +7,8 @@ INSTALL_REQUIRES = [
     'Flask-RESTful',
     'python-telegram-bot',
     'peewee',
-    'flask_cors'
+    'flask_cors',
+    'psycopg2'
 ]
 
 setup(

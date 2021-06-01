@@ -81,7 +81,7 @@ class Logic(BaseModel):
     user_id = IntegerField()
     logic_name = CharField()
     output_id = IntegerField()
-    logic = JSONField()
+    logic = CharField()
 
 
 if __name__ == '__main__':
