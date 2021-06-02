@@ -22,7 +22,7 @@ function go_register() {
 }
 
 async function postData(url = '', data = {}) {
-const response = await fetch(url, {
+const response = await fetch(url,{
 	method: 'POST',
 	mode: 'cors',
 	cache: 'no-cache',
@@ -39,7 +39,7 @@ return await response.json();
 
 function login() {
 	var passwd = document.getElementById('passwd').value;
-	postData('http://' + DNS + ':5002/login', {'login': document.getElementById('login').value, 'passwd': MD5(passwd)})
+	postData('http://' + 'localhost' + ':5002/login', {'login': document.getElementById('login').value, 'passwd': MD5(passwd)})
 			.then((data) => {
 				console.log(data);
 				if(data.status === "OK") {

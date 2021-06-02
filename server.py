@@ -1,15 +1,16 @@
 import os
+import json
 import hashlib
-from flask import Flask
+from flask import Flask, url_for
 from flask import request, render_template, jsonify, redirect, make_response, session
 from flask_restful import Resource, Api
 from flask_cors import CORS
 from email_sender import send_confirm_mail
 from db import create_user, check_user, get_username_by_id, check_user_data_collision, get_mail_by_username, \
-     confirm_user, get_users
+    confirm_user, get_users, load_user_logic_from_db
 import config
 from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, \
-    RegisterSensors, RegisterDevice, GetUserLogic, OutputsToUpdate, DeviceLogs
+    RegisterSensors, RegisterDevice, SaveUserLogic, OutputsToUpdate, DeviceLogs
 
 server = Flask('my_app')
 app = Flask(__name__)
@@ -24,7 +25,7 @@ api.add_resource(TestEndpoint, '/test_1')
 api.add_resource(TestTimeEndpoint, '/testtime')
 api.add_resource(RegisterSensors, '/sensors')
 api.add_resource(RegisterDevice, '/device')
-api.add_resource(GetUserLogic, '/logic')
+api.add_resource(SaveUserLogic, '/logic')
 api.add_resource(OutputsToUpdate, '/sensor_list')
 api.add_resource(DeviceLogs, '/device_logs')
 
@@ -50,7 +51,9 @@ def login():
         if user_id > -1:
             session['log'] = '1'
             session['user'] = user_id
-            return jsonify({"status": "OK"})
+            resp = make_response(jsonify({"status": "OK"}))
+            resp.set_cookie("user_id", str(user_id))
+            return resp
         else:
             session['log'] = '0'
             return jsonify({"status": "ERROR"})
@@ -66,7 +69,8 @@ def register():
             return jsonify({"status": "Login or email already used"})
         else:
             create_user(data['username'], data['email'], data['passwd'])
-            link = 'http://ddesmintyserver.ml:5002/account_confirm?user=' + data['username'] + '&code=' + hash_generate(data['username'] + data['email'])
+            link = 'http://ddesmintyserver.ml:5002/account_confirm?user=' + data['username'] + '&code=' + hash_generate(
+                data['username'] + data['email'])
             send_confirm_mail([data['email']], link)
             return jsonify({"status": "OK"})
 
@@ -85,21 +89,35 @@ def account_confirm():
             print('Some mistake')
 
 
+@app.route('/')
+def empty_url():
+    return redirect('localhost:5002/main')
+
+
 @app.route('/main')
 def main():
-    if True: #get_session_param('log'):
+    if get_session_param('log'):
         user_id = get_session_param('user')
-        return render_template("main.html", login=get_username_by_id(user_id), dev_sn="000000", dev_status="not connected")
+        return render_template("main.html", login=get_username_by_id(user_id), dev_sn="000000",
+                               dev_status="not connected")
     else:
-        return redirect("localhost:5002/login")
+        return redirect(url_for("login"))
 
 
 @app.route('/draw_page')
 def draw_page():
-    if True: #get_session_param('log'):
+    if True:#get_session_param('log'):
         return render_template("draw_page.html")
     else:
-        return redirect("localhost:5002/login")
+        return redirect(url_for("login"))
+
+
+@app.route('/load_logic')
+def load_user_logic():
+    user_id = request.args.get('user_id')
+    output_id = request.args.get('output_id')
+    res = load_user_logic_from_db(user_id, output_id)
+    return jsonify(res)
 
 
 @app.route('/confirm_mail')

@@ -2,6 +2,7 @@ from peewee import *
 from playhouse.cockroachdb import JSONField
 
 from config import BaseModel
+from utils import get_format_json
 
 
 class User(BaseModel):
@@ -65,6 +66,16 @@ def confirm_user(username):
         return 'error'
 
 
+def save_user_logic_from_db(output_id, user_id, logic, nodes, links):
+    Logic.create(user_id=user_id, output_id=output_id, logic_name=output_id, logic=str(logic), nodes=str(nodes),
+                 links=str(links))
+
+
+def load_user_logic_from_db(user_id, output_id):
+    query = Logic.get(Logic.user_id == user_id, Logic.output_id == output_id)
+    return {'nodes': get_format_json(query.nodes), 'links': get_format_json(query.links)}
+
+
 class Sensors(BaseModel):
     serial_number = CharField()
     type_int = IntegerField()
@@ -82,6 +93,8 @@ class Logic(BaseModel):
     logic_name = CharField()
     output_id = IntegerField()
     logic = CharField()
+    nodes = CharField()
+    links = CharField()
 
 
 if __name__ == '__main__':

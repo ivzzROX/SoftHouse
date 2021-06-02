@@ -19,17 +19,19 @@
 
 
 import time
-from flask import jsonify, request, Response
+from flask import jsonify, request, Response, session
 from flask_restful import Resource
 
 from config import sensor_type
 from data_providers.LogicNode import LogicNode
-from db import Sensors, Devices
-from utils import get_format_str, format_branches
+from db import Sensors, Devices, save_user_logic_from_db
+from utils import get_format_str, format_branches, get_week_day
 
 LOGIC = {"START": 1, "OR": 2, "AND": 3, "XOR": 4, "NOR": 5, "NAND": 6, "XNOR": 7, "NOT": 8}
 
 SENSORS = {1: "PUSH_BUTTON", 2: "RS_BUTTON", 3: "LIGHT", 4: "TEMPERATURE"}
+
+INPUT_TYPES = {"TIME": 't', "PMO": 'p', 'DAY OF WEEK': 'w'}
 
 
 class TestEndpoint(Resource):
@@ -122,9 +124,6 @@ class RegisterSensors(Resource):
             Sensors.create(serial_number=serial_number, type_int=type_int, type_hr=type_hr)
 
 
-a = {"DEVICE": {"SN": '001'}}
-
-
 class DeviceLogs(Resource):
     @staticmethod
     def post():
@@ -210,10 +209,20 @@ def form_branch(node, branches, current_branch_id, start_node_for_longest_branch
 
     if node.link_from1.node_type == 'INPUT' and node.link_from2.node_type == 'INPUT':
         print(node)
+
+        prefix_1 = INPUT_TYPES.get(node.link_from1.in_type) if INPUT_TYPES.get(node.link_from1.in_type) else ''
+        prefix_2 = INPUT_TYPES.get(node.link_from2.in_type) if INPUT_TYPES.get(node.link_from2.in_type) else ''
+        if prefix_1 == 'w':
+            node.link_from1.value = get_week_day(node.link_from1.value)
+        if prefix_2 == 'w':
+            node.link_from2.value = get_week_day(node.link_from2.value)
+
+
         branches.get(current_branch_id).insert(0,
-                                               f'{{{node.link_from2.data}: {LOGIC.get(node.logic_type)}: {node.link_from2.value}}}')  # add second item
+                                               f'{{{prefix_2}{node.link_from2.data}: {LOGIC.get(node.logic_type)}: {node.link_from2.value}}}')  # add second item
+
         branches.get(current_branch_id).insert(0,
-                                               f'{{{node.link_from1.data}: 1: {node.link_from1.value}}}')  # add start
+                                               f'{{{prefix_1}{node.link_from1.data}: 1: {node.link_from1.value}}}')  # add start
         return branches
 
     if (node.link_from1.node_type == 'INPUT' and node.link_from2.node_type == 'LOGIC') or (
@@ -263,12 +272,14 @@ def get_branches(nodes, start_node_for_longest_branch):
     return branches
 
 
-class GetUserLogic(Resource):
+class SaveUserLogic(Resource):
     @staticmethod
     def post():
         print(request.get_json(force=True))
-        objects = request.get_json(force=True).get('objects')
-        links = request.get_json(force=True).get('links')
+        request_body = request.get_json(force=True)
+        user_id = request_body.get('user_id')
+        objects = request_body.get('objects')
+        links = request_body.get('links')
         nodes = []
         nodes_id_dict = {}
         for _object in objects:
@@ -277,13 +288,13 @@ class GetUserLogic(Resource):
                              logic_type=_object.get('logicType'),
                              data=_object.get('number'),
                              value=_object.get('triggerValue'),
-                             counter=_object.get('blockValue'))
+                             counter=_object.get('blockValue'),
+                             in_type=_object.get('inType'))
             nodes.append(node)
             nodes_id_dict.update({node.node_id: node})
             if node.node_type == 'OUTPUT':
                 nodes_id_dict.update({'out': node})
-        del objects
-        del _object
+
         for node in nodes:
             # if node.node_type == 'LOGIC':
             for link in links:
@@ -317,4 +328,10 @@ class GetUserLogic(Resource):
                     counter = current_counter
                     start_node_for_longest_branch = node
                 print(node.print_val() + '\n')
-        print(get_branches(nodes_id_dict, start_node_for_longest_branch))
+        user_logic = get_branches(nodes_id_dict, start_node_for_longest_branch)
+        output_id = None
+        for node in nodes:
+            if node.node_type == 'OUTPUT':
+                output_id = node.data
+        print(user_logic)
+        save_user_logic_from_db(output_id, user_id, user_logic, objects, links)
