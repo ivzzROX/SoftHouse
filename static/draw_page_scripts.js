@@ -30,7 +30,7 @@ const LOGIC_BLOCK = ['lg', 'lg_value'];
 const INPUT_BLOCK = ['input', 'txt', 'trv'];
 
 const MAIN_URL = "/main";
-const PORT = 5002;
+const PORT = 5000;
 
 var objectList = [];
 var linkList = [];
@@ -679,7 +679,7 @@ function save() {
 //		delete obj['from']['y'];
 //	});
 
-    postData('http://127.0.0.1:5002/logic', {'objects': objectList, 'links': linkList, 'user_id': getcookie('user_id')})
+    postData(('http://127.0.0.1' +':' + PORT +'/logic'), {'objects': objectList, 'links': linkList, 'user_id': getcookie('user_id')})
         .then((data) => {
             console.log(data); // JSON data parsed by `response.json()` call
         });
@@ -696,29 +696,31 @@ function save() {
 function load() {
     var output = document.getElementById('out').value
     var user_id = getcookie('user_id');
-    getData(`http://127.0.0.1:5002/load_logic?user_id=${user_id}&output_id=${output}`)
+    getData(('http://127.0.0.1' +':' + PORT +`/load_logic?user_id=${user_id}&output_id=${output}`))
         .then((data) => {
             console.log(data.nodes)
             console.log(data.links)
             clean()
+
             data.nodes.forEach(function (item) {
+                load_canvas = document.getElementById("myCanvas")
                 objCounter++;
                 console.log('4to za nax')
                 console.log(item)
                 if (item.type === "INPUT") {
-                    objectList.push(new InputBlock(item.x, item.y, canvas.getContext("2d"), item.number, objCounter, item.inType, item.triggerValue))
+                    objectList.push(new InputBlock(item.x, item.y, load_canvas.getContext("2d"), item.number, objCounter, item.inType, item.triggerValue))
                 }
                 if (item.type === "OUTPUT") {
 
-                    objectList.push(new OutputBlock(item.x, item.y, canvas.getContext("2d"), item.number, objCounter))
+                    objectList.push(new OutputBlock(item.x, item.y, load_canvas.getContext("2d"), item.number, objCounter))
                 }
                 if (item.type === "LOGIC") {
                     console.log('x:' + item.x + ' y:' + item.y + ' logicType:' + item.logicType)
-                    objectList.push(new LogicBlock(item.x, item.y, canvas.getContext("2d"), logicNameToStruct(item.logicType), objCounter))
+                    objectList.push(new LogicBlock(item.x, item.y, load_canvas.getContext("2d"), logicNameToStruct(item.logicType), objCounter))
                 }
             });
             data.links.forEach(function (item) {
-                linkList.push(new Line(item.blockFrom, item.blockTo, canvas.getContext("2d"), item.id, item.position))
+                linkList.push(new Line(item.blockFrom, item.blockTo, load_canvas.getContext("2d"), item.id, item.position))
             })
             console.log(objectList)
             canvasRedrawFromList()
