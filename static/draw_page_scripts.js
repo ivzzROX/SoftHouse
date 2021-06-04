@@ -30,7 +30,7 @@ const LOGIC_BLOCK = ['lg', 'lg_value'];
 const INPUT_BLOCK = ['input', 'txt', 'trv'];
 
 const MAIN_URL = "/main";
-const PORT = 5000;
+const PORT = 5002;
 
 var objectList = [];
 var linkList = [];
@@ -305,6 +305,8 @@ class Line {
         this.blockTo = blockTo;
         this.id = id;
         this.position = position;
+        console.log(this.blockTo)
+        console.log(this.blockFrom)
     }
 
     draw() {
@@ -386,8 +388,6 @@ function canvasClear() {
 
 function canvasRedrawFromList() {
     canvasClear();
-    console.log(typeof (objectList))
-    console.log(typeof (linkList))
     objectList.forEach(function (obj) {
 
         obj.draw();
@@ -617,7 +617,7 @@ async function postData(url = '', data = {}) {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        credentials: 'include', // include, *same-origin, omit
         headers: {
             'Content-Type': 'application/json'
             // 'Content-Type': 'application/x-www-form-urlencoded',
@@ -634,7 +634,7 @@ async function getData(url = '') {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
-        credentials: 'same-origin',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -708,19 +708,31 @@ function load() {
                 console.log('4to za nax')
                 console.log(item)
                 if (item.type === "INPUT") {
-                    objectList.push(new InputBlock(item.x, item.y, load_canvas.getContext("2d"), item.number, objCounter, item.inType, item.triggerValue))
+                    objectList.push(new InputBlock(item.x, item.y, load_canvas.getContext("2d"), item.number, item.id, item.inType, item.triggerValue))
                 }
                 if (item.type === "OUTPUT") {
 
-                    objectList.push(new OutputBlock(item.x, item.y, load_canvas.getContext("2d"), item.number, objCounter))
+                    objectList.push(new OutputBlock(item.x, item.y, load_canvas.getContext("2d"), item.number, item.id))
                 }
                 if (item.type === "LOGIC") {
                     console.log('x:' + item.x + ' y:' + item.y + ' logicType:' + item.logicType)
-                    objectList.push(new LogicBlock(item.x, item.y, load_canvas.getContext("2d"), logicNameToStruct(item.logicType), objCounter))
+                    objectList.push(new LogicBlock(item.x, item.y, load_canvas.getContext("2d"), logicNameToStruct(item.logicType), item.id))
                 }
             });
+
+            var linkBlockFrom = null
+            var linkBlockTo = null
+
             data.links.forEach(function (item) {
-                linkList.push(new Line(item.blockFrom, item.blockTo, load_canvas.getContext("2d"), item.id, item.position))
+                objectList.forEach(function (block){
+                    if (block.id === item.blockFrom.id){
+                        linkBlockFrom = block
+                    }
+                    if (block.id === item.blockTo.id){
+                        linkBlockTo = block
+                    }
+                })
+                linkList.push(new Line(linkBlockFrom, linkBlockTo, load_canvas.getContext("2d"), item.id, item.position))
             })
             console.log(objectList)
             canvasRedrawFromList()

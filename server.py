@@ -4,7 +4,7 @@ import hashlib
 from flask import Flask, url_for
 from flask import request, render_template, jsonify, redirect, make_response, session
 from flask_restful import Resource, Api
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from email_sender import send_confirm_mail
 from db import create_user, check_user, get_username_by_id, check_user_data_collision, get_mail_by_username, \
     confirm_user, get_users, load_user_logic_from_db
@@ -14,9 +14,9 @@ from request_handler import TimeStamp, TestEndpoint, TestTimeEndpoint, \
 
 server = Flask('my_app')
 app = Flask(__name__)
-cors = CORS(app)
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 app.secret_key = os.urandom(24)
-app.config['SESSION_COOKIE_NAME'] = 'cookie'
+app.config['SESSION_COOKIE_NAME'] = 'data'
 app.config['SESSION_COOKIE_HTTPONLY'] = False
 app.config['CORS_HEADERS'] = 'Content-Type'
 api = Api(app)
@@ -41,6 +41,7 @@ def hash_generate(param):
 
 
 @app.route('/login', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
 def login():
     if request.method == 'GET':
         session['log'] = '0'
@@ -49,10 +50,14 @@ def login():
         data = request.json
         user_id = check_user(data['login'], data['passwd'])
         if user_id > -1:
-            session['log'] = '1'
-            session['user'] = user_id
             resp = make_response(jsonify({"status": "OK"}))
+            # resp = jsonify({"status": "OK"})
             resp.set_cookie("user_id", str(user_id))
+            # resp.headers.add('Access-Control-Allow-Credentials', 'true')
+            # resp.set_cookie("user_id", str(user_id))
+            session['user'] = str(user_id)
+            session['log'] = '1'
+            session.modified = True
             return resp
         else:
             session['log'] = '0'
@@ -60,6 +65,7 @@ def login():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
 def register():
     if request.method == 'GET':
         return render_template("register.html")
@@ -76,6 +82,7 @@ def register():
 
 
 @app.route('/account_confirm', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def account_confirm():
     if request.method == 'GET':
         user = request.args.get('user')
@@ -90,11 +97,13 @@ def account_confirm():
 
 
 @app.route('/')
+@cross_origin(supports_credentials=True)
 def empty_url():
     return redirect('localhost:5002/main')
 
 
 @app.route('/main')
+@cross_origin(supports_credentials=True)
 def main():
     if get_session_param('log'):
         user_id = get_session_param('user')
@@ -105,6 +114,7 @@ def main():
 
 
 @app.route('/draw_page')
+@cross_origin(supports_credentials=True)
 def draw_page():
     if True:#get_session_param('log'):
         return render_template("draw_page.html")
@@ -113,6 +123,7 @@ def draw_page():
 
 
 @app.route('/load_logic')
+@cross_origin(supports_credentials=True)
 def load_user_logic():
     user_id = request.args.get('user_id')
     output_id = request.args.get('output_id')
@@ -121,6 +132,7 @@ def load_user_logic():
 
 
 @app.route('/confirm_mail')
+@cross_origin(supports_credentials=True)
 def confirm_mail():
     return render_template("confirm_mail.html")
 
